@@ -8,7 +8,7 @@ function closeSidebar() {
   document.getElementById('sidebar').style.display = 'none';
 }
 
-// ✅ 核心修复：更新 Dashboard 卡片
+// ✅ 更新 Dashboard 卡片
 function updateDashboardCards() {
   const expenses = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
     { trID: 1, trDate: "2024-01-05", trCategory: "Rent", trAmount: 100.00, trNotes: "January Rent" },
@@ -54,85 +54,80 @@ function calculateRevTotal(orders) {
   return orders.reduce((total, order) => total + order.orderTotal, 0);
 }
 
-// ✅ 核心修复：将图表渲染逻辑封装，支持多次调用（切换语言时重绘）
-function renderCharts() {
-    // 1. 清空旧图表，防止重复渲染
-    document.getElementById('bar-chart').innerHTML = '';
-    document.getElementById('donut-chart').innerHTML = '';
+// ✅ 初始化图表（只调用一次，不清空 DOM）
+function initializeChart() {
+  const items = JSON.parse(localStorage.getItem('bizTrackProducts')) || [
+    { prodID: "PD001", prodName: "Baseball caps", prodDesc: "Peace embroidered cap", prodCat: "Hats", prodPrice: 25.00, prodSold: 20 },
+    { prodID: "PD002", prodName: "Water bottles", prodDesc: "Floral lotus printed bottle", prodCat: "Drinkware", prodPrice: 48.50, prodSold: 10 },
+    { prodID: "PD003", prodName: "Sweatshirt", prodDesc: "Palestine sweater", prodCat: "Clothing", prodPrice: 17.50, prodSold: 70 },
+    { prodID: "PD004", prodName: "Posters", prodDesc: "Vibes printed poster", prodCat: "Home decor", prodPrice: 12.00, prodSold: 60 },
+    { prodID: "PD005", prodName: "Pillow cases", prodDesc: "Morrocan print pillow case", prodCat: "Accessories", prodPrice: 17.00, prodSold: 40 },
+  ];
 
-    // 获取翻译函数，如果没有则使用英文兜底
-    const t = window.t || ((key) => key);
+  const categorySales = {};
+  items.forEach(p => {
+    categorySales[p.prodCat] = (categorySales[p.prodCat] || 0) + (p.prodPrice * p.prodSold);
+  });
 
-    // --- BAR CHART DATA ---
-    const items = JSON.parse(localStorage.getItem('bizTrackProducts')) || [
-        { prodID: "PD001", prodName: "Baseball caps", prodDesc: "Peace embroidered cap", prodCat: "Hats", prodPrice: 25.00, prodSold: 20 },
-        { prodID: "PD002", prodName: "Water bottles", prodDesc: "Floral lotus printed bottle", prodCat: "Drinkware", prodPrice: 48.50, prodSold: 10 },
-        { prodID: "PD003", prodName: "Sweatshirt", prodDesc: "Palestine sweater", prodCat: "Clothing", prodPrice: 17.50, prodSold: 70 },
-        { prodID: "PD004", prodName: "Posters", prodDesc: "Vibes printed poster", prodCat: "Home decor", prodPrice: 12.00, prodSold: 60 },
-        { prodID: "PD005", prodName: "Pillow cases", prodDesc: "Morrocan print pillow case", prodCat: "Accessories", prodPrice: 17.00, prodSold: 40 },
-    ];
+  const sortedCategorySales = Object.entries(categorySales).sort((a, b) => b[1] - a[1]).reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
 
-    const categorySales = {};
-    items.forEach(p => {
-        categorySales[p.prodCat] = (categorySales[p.prodCat] || 0) + (p.prodPrice * p.prodSold);
-    });
+  // 使用英文作为默认值（图表标题不翻译，避免复杂化）
+  const barChartOptions = {
+    series: [{ name: 'Total Sales',  Object.values(sortedCategorySales) }],
+    chart: { type: 'bar', height: 350, toolbar: { show: false } },
+    theme: { palette: 'palette9' },
+    plotOptions: { bar: { distributed: true, borderRadius: 3, columnWidth: '50%' } },
+    dataLabels: { enabled: false },
+    legend: { show: false },
+    fill: { opacity: 0.7 },
+    xaxis: { categories: Object.keys(sortedCategorySales), axisTicks: { show: false } },
+    yaxis: { 
+      title: { text: 'Total Sales ($)' },
+      axisTicks: { show: false } 
+    },
+    tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
+    title: { 
+      text: 'Sales by Product Category',
+      align: 'left', 
+      style: { fontSize: '16px' } 
+    }
+  };
+  new ApexCharts(document.querySelector('#bar-chart'), barChartOptions).render();
 
-    const sortedCategorySales = Object.entries(categorySales).sort((a, b) => b[1] - a[1]).reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+  // DONUT CHART
+  const expItems = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
+    { trID: 1, trCategory: "Rent", trAmount: 100.00 },
+    { trID: 2, trCategory: "Order Fulfillment", trAmount: 35.00 },
+    { trID: 3, trCategory: "Utilities", trAmount: 120.00 },
+    { trID: 4, trCategory: "Supplies", trAmount: 180.00 },
+    { trID: 5, trCategory: "Miscellaneous", trAmount: 20.00 },
+  ];
 
-    const barChartOptions = {
-        series: [{ name: t('dashboard.charts.totalSalesLabel'),  Object.values(sortedCategorySales) }],
-        chart: { type: 'bar', height: 350, toolbar: { show: false } },
-        theme: { palette: 'palette9' },
-        plotOptions: { bar: { distributed: true, borderRadius: 3, columnWidth: '50%' } },
-        dataLabels: { enabled: false },
-        legend: { show: false },
-        fill: { opacity: 0.7 },
-        xaxis: { categories: Object.keys(sortedCategorySales), axisTicks: { show: false } },
-        yaxis: { 
-            title: { text: t('dashboard.charts.totalSales') }, // ✅ 翻译 Y 轴
-            axisTicks: { show: false } 
-        },
-        tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
-        title: { 
-            text: t('dashboard.charts.salesByCategory'), // ✅ 翻译标题
-            align: 'left', 
-            style: { fontSize: '16px' } 
-        }
-    };
-    new ApexCharts(document.querySelector('#bar-chart'), barChartOptions).render();
+  const categoryExp = {};
+  expItems.forEach(item => { categoryExp[item.trCategory] = (categoryExp[item.trCategory] || 0) + item.trAmount; });
 
-    // --- DONUT CHART DATA ---
-    const expItems = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
-        { trID: 1, trCategory: "Rent", trAmount: 100.00 },
-        { trID: 2, trCategory: "Order Fulfillment", trAmount: 35.00 },
-        { trID: 3, trCategory: "Utilities", trAmount: 120.00 },
-        { trID: 4, trCategory: "Supplies", trAmount: 180.00 },
-        { trID: 5, trCategory: "Miscellaneous", trAmount: 20.00 },
-    ];
-
-    const categoryExp = {};
-    expItems.forEach(item => { categoryExp[item.trCategory] = (categoryExp[item.trCategory] || 0) + item.trAmount; });
-
-    const donutChartOptions = {
-        series: Object.values(categoryExp),
-        labels: Object.keys(categoryExp),
-        chart: { type: 'donut', width: '100%', toolbar: { show: false } },
-        theme: { palette: 'palette1' },
-        dataLabels: { enabled: true, style: { fontSize: '14px' } },
-        plotOptions: { pie: { customScale: 0.8, donut: { size: '60%' }, offsetY: 20 } },
-        legend: { position: 'left', offsetY: 55 },
-        tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
-        title: { 
-            text: t('dashboard.charts.expenses'), // ✅ 翻译标题
-            align: 'left', 
-            style: { fontSize: '16px' } 
-        }
-    };
-    new ApexCharts(document.querySelector('#donut-chart'), donutChartOptions).render();
+  const donutChartOptions = {
+    series: Object.values(categoryExp),
+    labels: Object.keys(categoryExp),
+    chart: { type: 'donut', width: '100%', toolbar: { show: false } },
+    theme: { palette: 'palette1' },
+    dataLabels: { enabled: true, style: { fontSize: '14px' } },
+    plotOptions: { pie: { customScale: 0.8, donut: { size: '60%' }, offsetY: 20 } },
+    legend: { position: 'left', offsetY: 55 },
+    tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
+    title: { 
+      text: 'Expenses',
+      align: 'left', 
+      style: { fontSize: '16px' } 
+    }
+  };
+  new ApexCharts(document.querySelector('#donut-chart'), donutChartOptions).render();
 }
 
 // 页面加载执行
 window.onload = function () {
   updateDashboardCards();
-  renderCharts(); // 初次渲染图表
+  if (typeof ApexCharts !== 'undefined') {
+    initializeChart();
+  }
 };
