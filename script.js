@@ -8,7 +8,7 @@ function closeSidebar() {
   document.getElementById('sidebar').style.display = 'none';
 }
 
-// ✅ 核心修复：将卡片渲染逻辑抽离为独立函数
+// ✅ 更新 Dashboard 卡片
 function updateDashboardCards() {
   const expenses = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
     { trID: 1, trDate: "2024-01-05", trCategory: "Rent", trAmount: 100.00, trNotes: "January Rent" },
@@ -36,10 +36,8 @@ function updateDashboardCards() {
   const balDiv = document.getElementById('balance');
   const ordDiv = document.getElementById('num-orders');
 
-  // 安全守卫：防止在非 Dashboard 页面报错
   if (!revDiv) return;
 
-  // 获取翻译函数，未加载时降级为英文
   const t = window.t || ((key) => key);
 
   revDiv.innerHTML = `<span class="title">${t('dashboard.cards.revenue')}</span><span class="amount-value">$${totalRevenues.toFixed(2)}</span>`;
@@ -56,7 +54,7 @@ function calculateRevTotal(orders) {
   return orders.reduce((total, order) => total + order.orderTotal, 0);
 }
 
-// ---------- CHARTS ----------
+// ✅ 初始化图表（图表标题使用固定英文，不翻译）
 function initializeChart() {
   const items = JSON.parse(localStorage.getItem('bizTrackProducts')) || [
     { prodID: "PD001", prodName: "Baseball caps", prodDesc: "Peace embroidered cap", prodCat: "Hats", prodPrice: 25.00, prodSold: 20 },
@@ -72,10 +70,10 @@ function initializeChart() {
   });
 
   const sortedCategorySales = Object.entries(categorySales).sort((a, b) => b[1] - a[1]).reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
-  const t = window.t || ((key) => key);
 
+  // 图表标题使用固定英文
   const barChartOptions = {
-    series: [{ name: t('dashboard.charts.totalSalesLabel'), data: Object.values(sortedCategorySales) }],
+    series: [{ name: 'Total Sales',  Object.values(sortedCategorySales) }],
     chart: { type: 'bar', height: 350, toolbar: { show: false } },
     theme: { palette: 'palette9' },
     plotOptions: { bar: { distributed: true, borderRadius: 3, columnWidth: '50%' } },
@@ -83,9 +81,16 @@ function initializeChart() {
     legend: { show: false },
     fill: { opacity: 0.7 },
     xaxis: { categories: Object.keys(sortedCategorySales), axisTicks: { show: false } },
-    yaxis: { title: { text: t('dashboard.charts.totalSales') }, axisTicks: { show: false } },
+    yaxis: { 
+      title: { text: 'Total Sales ($)' },
+      axisTicks: { show: false } 
+    },
     tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
-    title: { text: t('dashboard.charts.salesByCategory'), align: 'left', style: { fontSize: '16px' } }
+    title: { 
+      text: 'Sales by Product Category',  // 固定英文标题
+      align: 'left', 
+      style: { fontSize: '16px' } 
+    }
   };
   new ApexCharts(document.querySelector('#bar-chart'), barChartOptions).render();
 
@@ -99,7 +104,7 @@ function initializeChart() {
   ];
 
   const categoryExp = {};
-  expItems.forEach(t => { categoryExp[t.trCategory] = (categoryExp[t.trCategory] || 0) + t.trAmount; });
+  expItems.forEach(item => { categoryExp[item.trCategory] = (categoryExp[item.trCategory] || 0) + item.trAmount; });
 
   const donutChartOptions = {
     series: Object.values(categoryExp),
@@ -110,7 +115,11 @@ function initializeChart() {
     plotOptions: { pie: { customScale: 0.8, donut: { size: '60%' }, offsetY: 20 } },
     legend: { position: 'left', offsetY: 55 },
     tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
-    title: { text: t('dashboard.charts.expenses'), align: 'left', style: { fontSize: '16px' } }
+    title: { 
+      text: 'Expenses',  // 固定英文标题
+      align: 'left', 
+      style: { fontSize: '16px' } 
+    }
   };
   new ApexCharts(document.querySelector('#donut-chart'), donutChartOptions).render();
 }
@@ -118,5 +127,7 @@ function initializeChart() {
 // 页面加载执行
 window.onload = function () {
   updateDashboardCards();
-  if (typeof ApexCharts !== 'undefined') initializeChart();
+  if (typeof ApexCharts !== 'undefined') {
+    initializeChart();
+  }
 };
