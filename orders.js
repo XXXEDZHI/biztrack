@@ -3,6 +3,7 @@ function escapeHTML(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
 function openSidebar() {
     var side = document.getElementById('sidebar');
     side.style.display = (side.style.display === "block") ? "none" : "block";
@@ -12,7 +13,6 @@ function closeSidebar() {
     document.getElementById('sidebar').style.display = 'none';
 }
 
-
 function openForm() {
     var form = document.getElementById("order-form")
     form.style.display = (form.style.display === "block") ? "none" : "block";
@@ -20,6 +20,11 @@ function openForm() {
 
 function closeForm() {
     document.getElementById("order-form").style.display = "none";
+}
+
+// ✅ 辅助函数：将商品名称转换为翻译 key
+function getItemNameKey(name) {
+    return name.replace(/\s+/g, '').replace(/-/g, '').toLowerCase();
 }
 
 let orders = [];
@@ -53,7 +58,7 @@ window.onload = function () {
             orderStatus: "Processing"
         },
         {
-            orderID: "1003",
+            orderID: "products.names.toteBags",
             orderDate: "2024-02-05",
             itemName: "Tote bags",
             itemPrice: 20.00,
@@ -95,14 +100,14 @@ window.onload = function () {
 
 function addOrUpdate(event) {
     let type = document.getElementById("submitBtn").textContent;
-    if (type === 'Add') {
+    const t = window.t || ((key) => key);
+    if (type === t('orders.form.submit') || type === 'Add') {
         newOrder(event);
-    } else if (type === 'Update'){
+    } else if (type === t('orders.form.update') || type === 'Update'){
         const orderID = document.getElementById("order-id").value;
         updateOrder(orderID);
     }
 }
-
 
 function newOrder(event) {
   event.preventDefault();
@@ -141,7 +146,6 @@ function newOrder(event) {
   document.getElementById("order-form").reset();
 }
 
-
 function renderOrders(orders) {
     const orderTableBody = document.getElementById("tableBody");
     orderTableBody.innerHTML = "";
@@ -153,6 +157,9 @@ function renderOrders(orders) {
         "Shipped": "shipped",
         "Delivered": "delivered"
     }
+    
+    // ✅ 获取翻译函数，未加载时兜底为英文
+    const t = window.t || ((key) => key);
 
     orderToRender.forEach(order => {
       const orderRow = document.createElement("tr");
@@ -173,10 +180,15 @@ function renderOrders(orders) {
       const formattedTaxes = typeof order.taxes === 'number' ? `$${order.taxes.toFixed(2)}` : '';
       const formattedTotal = typeof order.orderTotal === 'number' ? `$${order.orderTotal.toFixed(2)}` : '';
 
+      // ✅ 商品名称翻译 + 状态翻译
+      const itemNameKey = getItemNameKey(order.itemName);
+      const translatedItemName = t('products.names.' + itemNameKey);
+      const translatedStatus = t('orders.status.' + order.orderStatus.toLowerCase());
+
       orderRow.innerHTML = `
         <td>${escapeHTML(order.orderID)}</td>
         <td>${escapeHTML(order.orderDate)}</td>
-        <td>${escapeHTML(order.itemName)}</td>
+        <td>${escapeHTML(translatedItemName)}</td>
         <td>${formattedPrice}</td>
         <td>${order.qtyBought}</td>
         <td>${formattedShipping}</td>
@@ -184,12 +196,12 @@ function renderOrders(orders) {
         <td class="order-total">${formattedTotal}</td>
         <td>
             <div class="status ${statusMap[order.orderStatus] || ''}">
-                <span>${t('orders.status.' + order.orderStatus.toLowerCase())}</span>
+                <span>${escapeHTML(translatedStatus)}</span>
             </div>
         </td>
         <td class="action">
-            <i title="Edit" onclick="editRow('${escapeHTML(order.orderID)}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-            <i onclick="deleteOrder('${order.orderID}')" class="delete-icon fas fa-trash-alt"></i>
+            <i title="${t('common.edit')}" onclick="editRow('${escapeHTML(order.orderID)}')" class="edit-icon fa-solid fa-pen-to-square"></i>
+            <i onclick="deleteOrder('${order.orderID}')" class="delete-icon fas fa-trash-alt" title="${t('common.delete')}"></i>
         </td>
       `;
       orderTableBody.appendChild(orderRow);
@@ -199,17 +211,19 @@ function renderOrders(orders) {
 
 function displayRevenue() {
     const resultElement = document.getElementById("total-revenue");
+    const t = window.t || ((key) => key);
 
     const totalRevenue = orders
         .reduce((total, order) => total + order.orderTotal, 0);
 
     resultElement.innerHTML = `
-        <span>Total Revenue: $${totalRevenue.toFixed(2)}</span>
+        <span>${t('orders.revenueLabel')}: $${totalRevenue.toFixed(2)}</span>
     `;
 }
 
 function editRow(orderID) {
     const orderToEdit = orders.find(order => order.orderID === orderID);
+    const t = window.t || ((key) => key);
 
     document.getElementById("order-id").value = orderToEdit.orderID;
     document.getElementById("order-date").value = orderToEdit.orderDate;
@@ -221,7 +235,7 @@ function editRow(orderID) {
     document.getElementById("order-total").value = orderToEdit.orderTotal;
     document.getElementById("order-status").value = orderToEdit.orderStatus;
 
-    document.getElementById("submitBtn").textContent = "Update";
+    document.getElementById("submitBtn").textContent = t('orders.form.update');
 
     document.getElementById("order-form").style.display = "block";
 }
@@ -240,6 +254,7 @@ function deleteOrder(orderID) {
 
 function updateOrder(orderID) {
     const indexToUpdate = orders.findIndex(order => order.orderID === orderID);
+    const t = window.t || ((key) => key);
 
     if (indexToUpdate !== -1) {
         const itemPrice = parseFloat(document.getElementById("item-price").value);
@@ -270,7 +285,7 @@ function updateOrder(orderID) {
         renderOrders(orders);
 
         document.getElementById("order-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
+        document.getElementById("submitBtn").textContent = t('orders.form.submit');
     }
 }
 
@@ -289,7 +304,6 @@ function sortTable(column) {
         const bValue = isNumeric ? parseFloat(b.dataset[column]) : b.dataset[column];
 
         if (typeof aValue === "string" && typeof bValue === "string") {
-            // Case-insensitive string comparison for text columns
             return aValue.localeCompare(bValue, undefined, { sensitivity: "base" });
         } else {
             return aValue - bValue;
@@ -307,7 +321,6 @@ document.getElementById("searchInput").addEventListener("keyup", function(event)
     }
 });
 
-
 function performSearch() {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();
     const rows = document.querySelectorAll(".order-row");
@@ -317,7 +330,6 @@ function performSearch() {
         row.style.display = visible ? "table-row" : "none";
     });
 }
-
 
 function exportToCSV() {
     const ordersToExport = orders.map(order => {
