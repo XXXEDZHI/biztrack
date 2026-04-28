@@ -29,15 +29,17 @@ function t(key) {
 }
 
 function applyTranslations() {
-    // 1. 翻译静态 HTML 元素
+    // 1. 翻译所有带 data-i18n 属性的 HTML 元素
     document.querySelectorAll('[data-i18n]').forEach(el => {
         el.textContent = t(el.getAttribute('data-i18n'));
     });
+    
+    // 2. 翻译 placeholder
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
     });
 
-    // 2. 触发动态 JS 内容更新（只更新卡片，不动图表）
+    // 3. 更新 Dashboard 卡片（动态内容）
     if (typeof updateDashboardCards === 'function') {
         updateDashboardCards();
     }
