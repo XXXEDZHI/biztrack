@@ -184,7 +184,7 @@ function renderOrders(orders) {
         <td class="order-total">${formattedTotal}</td>
         <td>
             <div class="status ${statusMap[order.orderStatus] || ''}">
-                <span>${escapeHTML(order.orderStatus)}</span>
+                <span>${t('orders.status.' + order.orderStatus.toLowerCase())}</span>
             </div>
         </td>
         <td class="action">
