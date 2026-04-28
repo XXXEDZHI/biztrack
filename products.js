@@ -3,6 +3,7 @@ function escapeHTML(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
 function openSidebar() {
   var side = document.getElementById('sidebar');
   side.style.display = (side.style.display === "block") ? "none" : "block";
@@ -12,16 +13,14 @@ function closeSidebar() {
   document.getElementById('sidebar').style.display = 'none';
 }
 
-
 function openForm() {
     var form = document.getElementById("product-form")
     form.style.display = (form.style.display === "block") ? "none" : "block";
 }
 
 function closeForm() {
-    document.getElementById("product-form").style.display = "none";
+  document.getElementById("product-form").style.display = "none";
 }
-
 
 let products = [];
 
@@ -81,9 +80,11 @@ function init() {
 
 function addOrUpdate(event) {
   let type = document.getElementById("submitBtn").textContent;
-  if (type === 'Add') {
+  // ✅ 兼容中英文判断
+  const t = window.t || ((key) => key);
+  if (type === t('products.form.submit') || type === 'Add') {
       newProduct(event);
-  } else if (type === 'Update'){
+  } else if (type === t('products.form.update') || type === 'Update'){
       const prodID = document.getElementById("product-id").value;
       updateProduct(prodID);
   }
@@ -120,12 +121,12 @@ function newProduct(event) {
   document.getElementById("product-form").reset();
 }
 
-
 function renderProducts(products) {
   const prodTableBody = document.getElementById("tableBody");
   prodTableBody.innerHTML = "";
 
   const prodToRender = products;
+  const t = window.t || ((key) => key);
 
   prodToRender.forEach(product => {
       const prodRow = document.createElement("tr");
@@ -138,16 +139,22 @@ function renderProducts(products) {
       prodRow.dataset.prodPrice = product.prodPrice;
       prodRow.dataset.prodSold = product.prodSold;
 
+      // ✅ 类别可以翻译（可选）
+      const translatedCategory = t('products.categories.' + product.prodCat.replace(/\s+/g, '').toLowerCase());
+      const displayCategory = translatedCategory !== ('products.categories.' + product.prodCat.replace(/\s+/g, '').toLowerCase()) 
+        ? translatedCategory 
+        : product.prodCat;
+
       prodRow.innerHTML = `
           <td>${escapeHTML(product.prodID)}</td>
           <td>${escapeHTML(product.prodName)}</td>
           <td>${escapeHTML(product.prodDesc)}</td>
-          <td>${escapeHTML(product.prodCat)}</td>
+          <td>${escapeHTML(displayCategory)}</td>
           <td>$${product.prodPrice.toFixed(2)}</td>
           <td>${product.prodSold}</td>
           <td class="action">
-            <i title="Edit" onclick="editRow('${escapeHTML(product.prodID)}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-            <i onclick="deleteProduct('${product.prodID}')" class="delete-icon fas fa-trash-alt"></i>
+            <i title="${t('common.edit')}" onclick="editRow('${escapeHTML(product.prodID)}')" class="edit-icon fa-solid fa-pen-to-square"></i>
+            <i onclick="deleteProduct('${product.prodID}')" class="delete-icon fas fa-trash-alt" title="${t('common.delete')}"></i>
           </td>
       `;
       prodTableBody.appendChild(prodRow);
@@ -164,7 +171,9 @@ function editRow(prodID) {
   document.getElementById("product-price").value = productToEdit.prodPrice;
   document.getElementById("product-sold").value = productToEdit.prodSold;
 
-  document.getElementById("submitBtn").textContent = "Update";
+  // ✅ 使用翻译函数
+  const t = window.t || ((key) => key);
+  document.getElementById("submitBtn").textContent = t('products.form.update');
 
   document.getElementById("product-form").style.display = "block";
 }
@@ -206,7 +215,10 @@ function updateProduct(prodID) {
         renderProducts(products);
 
         document.getElementById("product-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
+        
+        // ✅ 使用翻译函数
+        const t = window.t || ((key) => key);
+        document.getElementById("submitBtn").textContent = t('products.form.submit');
     }
 }
 
@@ -242,7 +254,6 @@ document.getElementById("searchInput").addEventListener("keyup", function(event)
     }
 });
 
-
 function performSearch() {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();
     const rows = document.querySelectorAll(".product-row");
@@ -252,7 +263,6 @@ function performSearch() {
         row.style.display = visible ? "table-row" : "none";
     });
 }
-
 
 function exportToCSV() {
   const productsToExport = products.map(product => {
@@ -287,4 +297,5 @@ function generateCSV(data) {
   return `${headers}\n${rows.join('\n')}`;
 }
 
+// 初始化
 init();
