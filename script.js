@@ -104,7 +104,7 @@ function initializeChart() {
     xaxis: { categories: Object.keys(sortedCategorySales), axisTicks: { show: false } },
     yaxis: { title: { text: t('dashboard.charts.totalSales') }, axisTicks: { show: false } },
     tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
-    title: { text: t('dashboard.charts.salesByCategory'), align: 'left', style: { fontSize: '16px' } }
+    title: { text: 'Sales by Product Category', align: 'left', style: { fontSize: '16px' } }
   };
   new ApexCharts(document.querySelector('#bar-chart'), barChartOptions).render();
 
@@ -129,7 +129,7 @@ function initializeChart() {
     plotOptions: { pie: { customScale: 0.8, donut: { size: '60%' }, offsetY: 20 } },
     legend: { position: 'left', offsetY: 55 },
     tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
-    title: { text: t('dashboard.charts.expenses'), align: 'left', style: { fontSize: '16px' } }
+    title: { text: 'Expenses', align: 'left', style: { fontSize: '16px' } }
   };
   new ApexCharts(document.querySelector('#donut-chart'), donutChartOptions).render();
 }
