@@ -4,7 +4,25 @@
     "products": "Products",
     "orders": "Orders",
     "expenses": "Expenses",
-    "help": "Help"
+    "help": "Help",
+    "about": "Meet the Developer"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "summary": "Summary",
+    "analytics": "Analytics",
+    "cards": {
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "orders": "Orders",
+      "balance": "Balance"
+    },
+    "charts": {
+      "salesByCategory": "Sales by Product Category",
+      "expenses": "Expenses",
+      "totalSales": "Total Sales ($)",
+      "totalSalesLabel": "Total Sales"
+    }
   },
   "orders": {
     "title": "Orders",
@@ -23,28 +41,99 @@
       "status": "Status",
       "actions": "Actions"
     },
-    "status": {
-      "pending": "Pending",
-      "processing": "Processing",
-      "shipped": "Shipped",
-      "delivered": "Delivered"
-    },
     "form": {
       "id": "Order ID",
       "date": "Order Date",
       "item": "Item Name",
       "price": "Item Price",
-      "qty": "Quantity",
-      "shipping": "Shipping Cost",
+      "qty": "Quantity Bought",
+      "shipping": "Shipping Fee",
       "taxes": "Taxes",
       "status": "Order Status",
+      "total": "Total Order Amount",
+      "calculated": "(Calculated)",
       "submit": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "choose": "Choose an item",
+      "chooseStatus": "Choose a status"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    }
+  },
+  "products": {
+    "title": "Products",
+    "add": "Add Product",
+    "export": "Download CSV",
+    "search": "Search products...",
+    "form": {
+      "id": "Product ID",
+      "name": "Product Name",
+      "desc": "Product Description",
+      "category": "Product Category",
+      "price": "Product Price",
+      "sold": "Number of Units Sold",
+      "submit": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "choose": "Choose a product",
+      "chooseCategory": "Choose a category"
+    },
+    "table": {
+      "id": "Product ID",
+      "name": "Product Name",
+      "desc": "Description",
+      "category": "Category",
+      "price": "Price",
+      "sold": "Units Sold",
+      "actions": "Action"
+    },
+    "categories": {
+      "clothing": "Clothing",
+      "drinkware": "Drinkware",
+      "accessories": "Accessories",
+      "hats": "Hats",
+      "homedecor": "Home decor"
+    }
+  },
+  "finances": {
+    "title": "Expenses",
+    "add": "Add Expense",
+    "export": "Export to CSV",
+    "search": "Search expenses...",
+    "table": {
+      "id": "Transaction ID",
+      "date": "Date",
+      "category": "Category",
+      "amount": "Amount",
+      "notes": "Notes",
+      "actions": "Actions"
+    },
+    "form": {
+      "id": "Transaction ID",
+      "date": "Transaction Date",
+      "category": "Expense Category",
+      "amount": "Amount",
+      "notes": "Notes",
+      "submit": "Add",
+      "update": "Update",
       "cancel": "Cancel"
     }
+  },
+  "help": {
+    "title": "Help",
+    "faq": "Frequently Asked Questions",
+    "contact": "Contact Us"
   },
   "common": {
     "edit": "Edit",
     "delete": "Delete",
-    "update": "Update"
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close"
   }
 }
