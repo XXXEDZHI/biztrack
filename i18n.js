@@ -1,17 +1,17 @@
-// i18n.js - 轻量级国际化引擎
+// i18n.js
 let currentLang = 'en';
 let translations = {};
 
 async function loadLanguage(lang) {
     try {
         const response = await fetch(`./locales/${lang}.json`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) throw new Error('Network response was not ok');
         translations = await response.json();
         currentLang = lang;
         applyTranslations();
         localStorage.setItem('biztrack_lang', lang);
     } catch (error) {
-        console.error('i18n 加载失败:', error);
+        console.error('i18n load error:', error);
     }
 }
 
@@ -19,17 +19,17 @@ function t(key) {
     const keys = key.split('.');
     let result = translations;
     for (const k of keys) {
-        if (result && typeof result === 'object' && result[k] !== undefined) {
+        if (result && result[k] !== undefined) {
             result = result[k];
         } else {
-            return key; // 找不到则返回原 key 作为兜底
+            return key; // 找不到返回 key
         }
     }
-    return result !== undefined ? result : key;
+    return result;
 }
 
 function applyTranslations() {
-    // 1. 翻译静态 HTML 元素
+    // 1. 翻译 HTML 元素
     document.querySelectorAll('[data-i18n]').forEach(el => {
         el.textContent = t(el.getAttribute('data-i18n'));
     });
@@ -37,17 +37,15 @@ function applyTranslations() {
         el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
     });
 
-    // 2. 触发动态 JS 内容更新（修复 Dashboard 卡片翻译键问题）
-    if (typeof updateDashboardCards === 'function') {
-        updateDashboardCards();
+    // 2. ✅ 关键修复：通知 orders.js 重新渲染表格
+    if (typeof window.renderOrdersTable === 'function') {
+        window.renderOrdersTable();
     }
 }
 
-// 页面加载完成后初始化语言
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('biztrack_lang') || 'en';
     loadLanguage(savedLang);
 });
 
-// 暴露全局 API
 window.i18n = { loadLanguage, t };
