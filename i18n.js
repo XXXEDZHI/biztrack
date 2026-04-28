@@ -22,7 +22,7 @@ function t(key) {
         if (result && typeof result === 'object' && result[k] !== undefined) {
             result = result[k];
         } else {
-            return key; // 找不到则返回原 key 作为兜底
+            return key; 
         }
     }
     return result !== undefined ? result : key;
@@ -37,9 +37,14 @@ function applyTranslations() {
         el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
     });
 
-    // 2. 触发动态 JS 内容更新（修复 Dashboard 卡片翻译键问题）
+    // 2. 触发动态 JS 内容更新
     if (typeof updateDashboardCards === 'function') {
         updateDashboardCards();
+    }
+
+    // ✅ 新增：触发图表重绘，解决图表标题和坐标轴不翻译的问题
+    if (typeof renderCharts === 'function') {
+        renderCharts();
     }
 }
 
