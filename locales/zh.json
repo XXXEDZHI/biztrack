@@ -94,17 +94,17 @@
       "actions": "操作"
     },
     "categories": {
-      "hats": "帽子",
-      "drinkware": "饮具",
       "clothing": "服装",
+      "drinkware": "饮具",
       "accessories": "配件",
+      "hats": "帽子",
       "homedecor": "家居装饰"
     },
     "names": {
       "baseballcaps": "棒球帽",
       "snapbacks": "平檐帽",
       "beanies": "针织帽",
-      "bucketHats": "渔夫帽",
+      "buckethats": "渔夫帽",
       "mugs": "马克杯",
       "waterbottles": "水瓶",
       "tumblers": "保温杯",
@@ -124,8 +124,9 @@
     "add": "添加费用",
     "export": "导出CSV",
     "search": "搜索费用...",
+    "totalLabel": "总支出",
     "table": {
-      "id": "交易号",
+      "id": "序号",
       "date": "日期",
       "category": "类别",
       "amount": "金额",
@@ -133,14 +134,21 @@
       "actions": "操作"
     },
     "form": {
-      "id": "交易号",
       "date": "交易日期",
       "category": "费用类别",
       "amount": "金额",
       "notes": "备注",
       "submit": "添加",
       "update": "更新",
-      "cancel": "取消"
+      "cancel": "取消",
+      "chooseCategory": "选择类别"
+    },
+    "categories": {
+      "rent": "房租",
+      "utilities": "水电费",
+      "supplies": "物料",
+      "orderfulfillment": "订单履约",
+      "miscellaneous": "其他"
     }
   },
   "help": {
