@@ -22,24 +22,22 @@ function t(key) {
         if (result && typeof result === 'object' && result[k] !== undefined) {
             result = result[k];
         } else {
-            return key; 
+            return key; // 找不到则返回原 key 作为兜底
         }
     }
     return result !== undefined ? result : key;
 }
 
 function applyTranslations() {
-    // 1. 翻译所有带 data-i18n 属性的 HTML 元素
+    // 1. 翻译静态 HTML 元素
     document.querySelectorAll('[data-i18n]').forEach(el => {
         el.textContent = t(el.getAttribute('data-i18n'));
     });
-    
-    // 2. 翻译 placeholder
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
     });
 
-    // 3. 更新 Dashboard 卡片（动态内容）
+    // 2. 触发动态 JS 内容更新（修复 Dashboard 卡片翻译键问题）
     if (typeof updateDashboardCards === 'function') {
         updateDashboardCards();
     }
