@@ -29,6 +29,7 @@
     "add": "Add Order",
     "export": "Export to CSV",
     "search": "Search orders...",
+    "revenueLabel": "Total Revenue",
     "table": {
       "id": "Order ID",
       "date": "Date",
@@ -98,6 +99,24 @@
       "accessories": "Accessories",
       "hats": "Hats",
       "homedecor": "Home decor"
+    },
+    "names": {
+      "baseballcaps": "Baseball caps",
+      "snapbacks": "Snapbacks",
+      "beanies": "Beanies",
+      "buckethats": "Bucket hats",
+      "mugs": "Mugs",
+      "waterbottles": "Water bottles",
+      "tumblers": "Tumblers",
+      "tshirts": "T-shirts",
+      "sweatshirts": "Sweatshirts",
+      "hoodies": "Hoodies",
+      "pillowcases": "Pillow cases",
+      "totebags": "Tote bags",
+      "stickers": "Stickers",
+      "posters": "Posters",
+      "framedposters": "Framed posters",
+      "canvasprints": "Canvas prints"
     }
   },
   "finances": {
