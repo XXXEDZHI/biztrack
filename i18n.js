@@ -37,14 +37,9 @@ function applyTranslations() {
         el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
     });
 
-    // 2. 触发动态 JS 内容更新
+    // 2. 触发动态 JS 内容更新（只更新卡片，不动图表）
     if (typeof updateDashboardCards === 'function') {
         updateDashboardCards();
-    }
-
-    // ✅ 新增：触发图表重绘，解决图表标题和坐标轴不翻译的问题
-    if (typeof renderCharts === 'function') {
-        renderCharts();
     }
 }
 
