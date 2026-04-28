@@ -116,23 +116,24 @@ window.onload = function () {
   const balDiv = document.getElementById('balance');
   const ordDiv = document.getElementById('num-orders');
 
+  // ✅ 使用 t() 函数获取翻译文本
   revDiv.innerHTML = `
-      <span class="title">Revenue</span>
+      <span class="title">${window.t ? window.t('dashboard.cards.revenue') : 'Revenue'}</span>
       <span class="amount-value">$${totalRevenues.toFixed(2)}</span> 
   `;
 
   expDiv.innerHTML = `
-    <span class="title">Expenses</span>
+    <span class="title">${window.t ? window.t('dashboard.cards.expenses') : 'Expenses'}</span>
     <span class="amount-value">$${totalExpenses.toFixed(2)}</span>
   `;
 
   balDiv.innerHTML = `
-    <span class="title">Balance</span>
+    <span class="title">${window.t ? window.t('dashboard.cards.balance') : 'Balance'}</span>
     <span class="amount-value">$${totalBalance.toFixed(2)}</span>
   `;
 
   ordDiv.innerHTML = `
-    <span class="title">Orders</span>
+    <span class="title">${window.t ? window.t('dashboard.cards.orders') : 'Orders'}</span>
     <span class="amount-value">${numOrders}</span>
   `;
 };
@@ -215,9 +216,13 @@ function initializeChart() {
     .sort(([, a], [, b]) => b - a)
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
+  // ✅ 获取翻译的图表标题和轴标签
+  const chartTitleSales = window.t ? window.t('dashboard.charts.salesByCategory') : 'Sales by Product Category';
+  const yAxisTitle = window.t ? window.t('dashboard.charts.totalSales') : 'Total Sales ($)';
+
   const barChartOptions = {
       series: [{
-          name: "Total Sales",
+          name: window.t ? window.t('dashboard.charts.totalSalesLabel') : "Total Sales",
           data: Object.values(sortedCategorySales),
       }],
       chart: {
@@ -226,9 +231,8 @@ function initializeChart() {
         toolbar: {show: false},
       },
       theme: {
-        palette: 'palette9' // upto palette10
+        palette: 'palette9'
       },
-      // colors: ['#247BA0', '#A37A74', '#249672', '#e49273', '#9AADBF'],
       plotOptions: {
         bar: {
           distributed: true,
@@ -254,7 +258,7 @@ function initializeChart() {
       },
       yaxis: {
         title: {
-          text: 'Total Sales ($)',
+          text: yAxisTitle,
         },
         axisTicks: {
           show: false,
@@ -265,6 +269,13 @@ function initializeChart() {
           formatter: function (val) {
             return '$' + val.toFixed(2);
           }
+        }
+      },
+      title: {
+        text: chartTitleSales,
+        align: 'left',
+        style: {
+          fontSize: '16px'
         }
       }
     };
@@ -332,11 +343,13 @@ function initializeChart() {
   ];
   const categoryExpData = calculateCategoryExp(expItems);
 
+  // ✅ 获取翻译的图表标题
+  const chartTitleExpenses = window.t ? window.t('dashboard.charts.expenses') : 'Expenses';
+
   const donutChartOptions = {
     series: Object.values(categoryExpData),
     labels: Object.keys(categoryExpData),
     chart: {
-      // height: 350,
       type: 'donut',
       width: '100%',
       toolbar: {
@@ -344,7 +357,7 @@ function initializeChart() {
       },
     },
     theme: {
-      palette: 'palette1' // upto palette10
+      palette: 'palette1'
     },
     dataLabels: {
       enabled: true,
@@ -377,6 +390,13 @@ function initializeChart() {
         }
       }
     },
+    title: {
+      text: chartTitleExpenses,
+      align: 'left',
+      style: {
+        fontSize: '16px'
+      }
+    }
   };
   
   const donutChart = new ApexCharts(
