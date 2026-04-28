@@ -8,12 +8,26 @@ function closeSidebar() {
   document.getElementById('sidebar').style.display = 'none';
 }
 
+// ✅ 核心修复：将卡片渲染逻辑抽离为独立函数
 function updateDashboardCards() {
-  const expenses = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [];
-  const revenues = JSON.parse(localStorage.getItem('bizTrackOrders')) || [];
+  const expenses = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
+    { trID: 1, trDate: "2024-01-05", trCategory: "Rent", trAmount: 100.00, trNotes: "January Rent" },
+    { trID: 2, trDate: "2024-01-15", trCategory: "Order Fulfillment", trAmount: 35.00, trNotes: "Order #1005" },
+    { trID: 3, trDate: "2024-01-08", trCategory: "Utilities", trAmount: 120.00, trNotes: "Internet" },
+    { trID: 4, trDate: "2024-02-05", trCategory: "Supplies", trAmount: 180.00, trNotes: "Embroidery Machine" },
+    { trID: 5, trDate: "2024-01-25", trCategory: "Miscellaneous", trAmount: 20.00, trNotes: "Pizza" },
+  ];
+  
+  const revenues = JSON.parse(localStorage.getItem('bizTrackOrders')) || [
+    { orderID: "1001", orderDate: "2024-01-05", itemName: "Baseball caps", itemPrice: 25.00, qtyBought: 2, shipping: 2.50, taxes: 9.00, orderTotal: 61.50, orderStatus: "Pending" },
+    { orderID: "1002", orderDate: "2024-03-05", itemName: "Water bottles", itemPrice: 17.00, qtyBought: 3, shipping: 3.50, taxes: 6.00, orderTotal: 60.50, orderStatus: "Processing" },
+    { orderID: "1003", orderDate: "2024-02-05", itemName: "Tote bags", itemPrice: 20.00, qtyBought: 4, shipping: 2.50, taxes: 2.00, orderTotal: 84.50, orderStatus: "Shipped" },
+    { orderID: "1004", orderDate: "2023-01-05", itemName: "Canvas prints", itemPrice: 55.00, qtyBought: 1, shipping: 2.50, taxes: 19.00, orderTotal: 76.50, orderStatus: "Delivered" },
+    { orderID: "1005", orderDate: "2024-01-15", itemName: "Beanies", itemPrice: 15.00, qtyBought: 2, shipping: 3.90, taxes: 4.00, orderTotal: 37.90, orderStatus: "Pending" },
+  ];
 
-  const totalExpenses = expenses.reduce((sum, e) => sum + e.trAmount, 0);
-  const totalRevenues = revenues.reduce((sum, r) => sum + r.orderTotal, 0);
+  const totalExpenses = calculateExpTotal(expenses);
+  const totalRevenues = calculateRevTotal(revenues);
   const totalBalance = totalRevenues - totalExpenses;
   const numOrders = revenues.length;
 
@@ -22,9 +36,12 @@ function updateDashboardCards() {
   const balDiv = document.getElementById('balance');
   const ordDiv = document.getElementById('num-orders');
 
+  // 安全守卫：防止在非 Dashboard 页面报错
   if (!revDiv) return;
 
-  const t = (window.i18n && window.i18n.t) ? window.i18n.t : (key => {
+  // ✅ 修复：使用更安全的翻译函数
+  const t = (typeof window !== 'undefined' && window.t) ? window.t : (key => {
+    // 翻译未加载时，返回英文原文
     const fallback = {
       'dashboard.cards.revenue': 'Revenue',
       'dashboard.cards.expenses': 'Expenses',
@@ -40,13 +57,33 @@ function updateDashboardCards() {
   ordDiv.innerHTML = `<span class="title">${t('dashboard.cards.orders')}</span><span class="amount-value">${numOrders}</span>`;
 }
 
-// ✅ 核心修复：封装图表渲染函数，使其可重复调用
-window.renderDashboardCharts = function() {
-  // 清空旧图表
-  document.getElementById('bar-chart').innerHTML = '';
-  document.getElementById('donut-chart').innerHTML = '';
+function calculateExpTotal(transactions) {
+  return transactions.reduce((total, transaction) => total + transaction.trAmount, 0);
+}
 
-  const t = (window.i18n && window.i18n.t) ? window.i18n.t : (key => {
+function calculateRevTotal(orders) {
+  return orders.reduce((total, order) => total + order.orderTotal, 0);
+}
+
+// ---------- CHARTS ----------
+function initializeChart() {
+  const items = JSON.parse(localStorage.getItem('bizTrackProducts')) || [
+    { prodID: "PD001", prodName: "Baseball caps", prodDesc: "Peace embroidered cap", prodCat: "Hats", prodPrice: 25.00, prodSold: 20 },
+    { prodID: "PD002", prodName: "Water bottles", prodDesc: "Floral lotus printed bottle", prodCat: "Drinkware", prodPrice: 48.50, prodSold: 10 },
+    { prodID: "PD003", prodName: "Sweatshirt", prodDesc: "Palestine sweater", prodCat: "Clothing", prodPrice: 17.50, prodSold: 70 },
+    { prodID: "PD004", prodName: "Posters", prodDesc: "Vibes printed poster", prodCat: "Home decor", prodPrice: 12.00, prodSold: 60 },
+    { prodID: "PD005", prodName: "Pillow cases", prodDesc: "Morrocan print pillow case", prodCat: "Accessories", prodPrice: 17.00, prodSold: 40 },
+  ];
+
+  const categorySales = {};
+  items.forEach(p => {
+    categorySales[p.prodCat] = (categorySales[p.prodCat] || 0) + (p.prodPrice * p.prodSold);
+  });
+
+  const sortedCategorySales = Object.entries(categorySales).sort((a, b) => b[1] - a[1]).reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+  
+  // ✅ 修复：使用更安全的翻译函数
+  const t = (typeof window !== 'undefined' && window.t) ? window.t : (key => {
     const fallback = {
       'dashboard.charts.totalSalesLabel': 'Total Sales',
       'dashboard.charts.totalSales': 'Total Sales ($)',
@@ -56,69 +93,49 @@ window.renderDashboardCharts = function() {
     return fallback[key] || key;
   });
 
-  // BAR CHART
-  const items = JSON.parse(localStorage.getItem('bizTrackProducts')) || [
-    { prodCat: "Hats", prodPrice: 25.00, prodSold: 20 },
-    { prodCat: "Drinkware", prodPrice: 48.50, prodSold: 10 },
-    { prodCat: "Clothing", prodPrice: 17.50, prodSold: 70 },
-    { prodCat: "Home decor", prodPrice: 12.00, prodSold: 60 },
-    { prodCat: "Accessories", prodPrice: 17.00, prodSold: 40 },
-  ];
-
-  const categorySales = {};
-  items.forEach(p => {
-    categorySales[p.prodCat] = (categorySales[p.prodCat] || 0) + (p.prodPrice * p.prodSold);
-  });
-
-  const sortedSales = Object.entries(categorySales).sort((a, b) => b[1] - a[1]);
-
-  const barOptions = {
-    series: [{ name: t('dashboard.charts.totalSalesLabel'),  sortedSales.map(x => x[1]) }],
+  const barChartOptions = {
+    series: [{ name: t('dashboard.charts.totalSalesLabel'), data: Object.values(sortedCategorySales) }],
     chart: { type: 'bar', height: 350, toolbar: { show: false } },
-    plotOptions: { bar: { distributed: true, borderRadius: 3 } },
+    theme: { palette: 'palette9' },
+    plotOptions: { bar: { distributed: true, borderRadius: 3, columnWidth: '50%' } },
     dataLabels: { enabled: false },
-    xaxis: { categories: sortedSales.map(x => x[0]) },
-    yaxis: { title: { text: t('dashboard.charts.totalSales') } },
-    title: { text: t('dashboard.charts.salesByCategory'), align: 'left' }
+    legend: { show: false },
+    fill: { opacity: 0.7 },
+    xaxis: { categories: Object.keys(sortedCategorySales), axisTicks: { show: false } },
+    yaxis: { title: { text: t('dashboard.charts.totalSales') }, axisTicks: { show: false } },
+    tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
+    title: { text: t('dashboard.charts.salesByCategory'), align: 'left', style: { fontSize: '16px' } }
   };
-
-  if (document.querySelector('#bar-chart')) {
-    new ApexCharts(document.querySelector('#bar-chart'), barOptions).render();
-  }
+  new ApexCharts(document.querySelector('#bar-chart'), barChartOptions).render();
 
   // DONUT CHART
-  const transactions = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
-    { trCategory: "Rent", trAmount: 100 },
-    { trCategory: "Order Fulfillment", trAmount: 35 },
-    { trCategory: "Utilities", trAmount: 120 },
-    { trCategory: "Supplies", trAmount: 180 },
-    { trCategory: "Miscellaneous", trAmount: 20 },
+  const expItems = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
+    { trID: 1, trCategory: "Rent", trAmount: 100.00 },
+    { trID: 2, trCategory: "Order Fulfillment", trAmount: 35.00 },
+    { trID: 3, trCategory: "Utilities", trAmount: 120.00 },
+    { trID: 4, trCategory: "Supplies", trAmount: 180.00 },
+    { trID: 5, trCategory: "Miscellaneous", trAmount: 20.00 },
   ];
 
   const categoryExp = {};
-  transactions.forEach(t => {
-    categoryExp[t.trCategory] = (categoryExp[t.trCategory] || 0) + t.trAmount;
-  });
+  expItems.forEach(item => { categoryExp[item.trCategory] = (categoryExp[item.trCategory] || 0) + item.trAmount; });
 
-  const donutOptions = {
+  const donutChartOptions = {
     series: Object.values(categoryExp),
-    chart: { type: 'donut', width: '100%' },
     labels: Object.keys(categoryExp),
-    title: { text: t('dashboard.charts.expenses'), align: 'left' },
-    legend: { position: 'left' }
+    chart: { type: 'donut', width: '100%', toolbar: { show: false } },
+    theme: { palette: 'palette1' },
+    dataLabels: { enabled: true, style: { fontSize: '14px' } },
+    plotOptions: { pie: { customScale: 0.8, donut: { size: '60%' }, offsetY: 20 } },
+    legend: { position: 'left', offsetY: 55 },
+    tooltip: { y: { formatter: val => '$' + val.toFixed(2) } },
+    title: { text: t('dashboard.charts.expenses'), align: 'left', style: { fontSize: '16px' } }
   };
+  new ApexCharts(document.querySelector('#donut-chart'), donutChartOptions).render();
+}
 
-  if (document.querySelector('#donut-chart')) {
-    new ApexCharts(document.querySelector('#donut-chart'), donutOptions).render();
-  }
+// 页面加载执行
+window.onload = function () {
+  updateDashboardCards();
+  if (typeof ApexCharts !== 'undefined') initializeChart();
 };
-
-// 页面加载时执行
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    updateDashboardCards();
-    if (typeof ApexCharts !== 'undefined') {
-      window.renderDashboardCharts();
-    }
-  }, 100);
-});
