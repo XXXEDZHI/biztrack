@@ -13,6 +13,12 @@
     <title>Expenses - BizTrack</title>
 </head>
 <body>
+    <!-- ✅ 语言切换按钮 -->
+    <div class="lang-switch" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background: white; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <button onclick="i18n.loadLanguage('en')" style="padding: 5px 12px; cursor: pointer; border: none; background: #4CAF50; color: white; border-radius: 3px;">EN</button>
+        <button onclick="i18n.loadLanguage('zh')" style="padding: 5px 12px; cursor: pointer; border: none; background: #2196F3; color: white; border-radius: 3px; margin-left: 5px;">中文</button>
+    </div>
+
     <div id="sidebar" class="sidebar">
         <div class="logo">
             <a href="./index.html">
@@ -25,37 +31,37 @@
             <li>
                 <a href="./index.html">
                     <i class="fa-solid fa-gauge-high"></i>
-                    <span>Dashboard</span>
+                    <span data-i18n="nav.dashboard">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="./products.html">
                     <i class="fas fa-dolly"></i>
-                    <span>Products</span>
+                    <span data-i18n="nav.products">Products</span>
                 </a>
             </li>
             <li>
                 <a href="./orders.html">
                     <i class="fas fa-shopping-cart"></i>
-                    <span>Orders</span>
+                    <span data-i18n="nav.orders">Orders</span>
                 </a>
             </li>
             <li class="active">
                 <a href="./finances.html">
                     <i class="fas fa-sack-dollar"></i>
-                    <span>Expenses</span>
+                    <span data-i18n="nav.expenses">Expenses</span>
                 </a>
             </li>
             <li>
                 <a href="./help.html">
                     <i class="fas fa-question-circle"></i>
-                    <span>Help</span>
+                    <span data-i18n="nav.help">Help</span>
                 </a>
             </li>
             <li class="logout">
                 <a href="./about.html">
                     <i class="fa-solid fa-users-line"></i>
-                    <span>Meet the Developer</span>
+                    <span data-i18n="nav.about">Meet the Developer</span>
                 </a>
             </li>
         </ul>
@@ -67,54 +73,54 @@
                 <i class="fa-solid fa-bars"></i>
             </div>
             <div class="header-title">
-                <!-- <span>Primary</span> -->
-                <h2>Expenses</h2>
+                <h2 data-i18n="finances.title">Expenses</h2>
             </div>
             <div class="user-info">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="search" id="searchInput" placeholder="Search">
+                    <input type="search" id="searchInput" data-i18n-placeholder="finances.search" placeholder="Search">
                 </div>
-                <!-- <i class="fas fa-user-alt fa-xl"></i> -->
             </div>
         </div>
 
         <div class="table-wrapper">
             <div class="product-title">
-                <h3 class="main-title">Expenses</h3>
+                <h3 class="main-title" data-i18n="finances.title">Expenses</h3>
                 <div class="finance-button">
-                    <button class="add-button" onclick="openForm()">Add Expense</button>
-                    <button class="download-button" onclick="exportToCSV()">Export to CSV</button>
+                    <button class="add-button" onclick="openForm()" data-i18n="finances.add">Add Expense</button>
+                    <button class="download-button" onclick="exportToCSV()" data-i18n="finances.export">Export to CSV</button>
                 </div>
             </div>
 
             <div class="form-popup">
                 <form class="form-container" id="transaction-form" onsubmit="addOrUpdate(event)">
                     <div class="form-columns">
-                            <input type="hidden" id="tr-id">
-                            <label for="tr-date"><b>Date: </b></label>
-                            <input type="date" id="tr-date" required>
+                        <input type="hidden" id="tr-id">
+                        
+                        <label for="tr-date"><b data-i18n="finances.form.date">Date: </b></label>
+                        <input type="date" id="tr-date" required>
 
-                            <label for="tr-category"><b>Category: </b></label>
-                            <select name="tr-category" id="tr-category" required>
-                                <option value="" disabled selected hidden>Choose an expense category</option>
-                                <option value="Rent">Rent</option>
-                                <option value="Utilities">Utilities</option>
-                                <option value="Supplies">Supplies</option>
-                                <option value="Order Fulfillment">Order Fulfillment</option>
-                                <option value="Miscellaneous">Miscellaneous</option>
-                            </select>
+                        <label for="tr-category"><b data-i18n="finances.form.category">Category: </b></label>
+                        <!-- ✅ 给 option 添加 data-i18n -->
+                        <select name="tr-category" id="tr-category" required>
+                            <option value="" disabled selected hidden data-i18n="finances.form.chooseCategory">Choose an expense category</option>
+                            <option value="Rent" data-i18n="finances.categories.rent">Rent</option>
+                            <option value="Utilities" data-i18n="finances.categories.utilities">Utilities</option>
+                            <option value="Supplies" data-i18n="finances.categories.supplies">Supplies</option>
+                            <option value="Order Fulfillment" data-i18n="finances.categories.orderfulfillment">Order Fulfillment</option>
+                            <option value="Miscellaneous" data-i18n="finances.categories.miscellaneous">Miscellaneous</option>
+                        </select>
 
-                            <label for="tr-amount"><b>Amount: </b></label>
-                            <input type="number" id="tr-amount" placeholder="$0.00" min="0.00" max="10000.00" step="0.01" required>
+                        <label for="tr-amount"><b data-i18n="finances.form.amount">Amount: </b></label>
+                        <input type="number" id="tr-amount" placeholder="$0.00" min="0.00" max="10000.00" step="0.01" required>
 
-                            <label for="tr-notes"><b>Notes: </b></label>
-                            <input type="text" id="tr-notes" placeholder="Power bill" required>
+                        <label for="tr-notes"><b data-i18n="finances.form.notes">Notes: </b></label>
+                        <input type="text" id="tr-notes" placeholder="Power bill" required>
                     </div>
                     
                     <div class="button-col">
-                        <button type="submit" class="btn" id="submitBtn">Add</button>
-                        <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                        <button type="submit" class="btn" id="submitBtn" data-i18n="finances.form.submit">Add</button>
+                        <button type="button" class="btn cancel" onclick="closeForm()" data-i18n="finances.form.cancel">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -123,12 +129,12 @@
                 <table id="finance-table">
                     <thead>
                         <tr>
-                            <th onclick="sortTable('trID')">S/N</th>
-                            <th onclick="sortTable('trDate')">Date</th>
-                            <th onclick="sortTable('trCategory')">Expense Category</th>
-                            <th onclick="sortTable('trAmount')">Amount</th>
-                            <th onclick="sortTable('trNotes')">Notes</th>
-                            <th>Action</th>
+                            <th onclick="sortTable('trID')" data-i18n="finances.table.id">S/N</th>
+                            <th onclick="sortTable('trDate')" data-i18n="finances.table.date">Date</th>
+                            <th onclick="sortTable('trCategory')" data-i18n="finances.table.category">Expense Category</th>
+                            <th onclick="sortTable('trAmount')" data-i18n="finances.table.amount">Amount</th>
+                            <th onclick="sortTable('trNotes')" data-i18n="finances.table.notes">Notes</th>
+                            <th data-i18n="finances.table.actions">Action</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -144,8 +150,9 @@
             </div>
         </div>
     </div>
-    </div>
 
+    <!-- ✅ 先引入翻译引擎，再引入业务逻辑 -->
+    <script src="i18n.js"></script>
     <script src="./finances.js"></script>
 </body>
 </html>

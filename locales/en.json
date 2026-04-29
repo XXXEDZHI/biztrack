@@ -1,0 +1,207 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "orders": "Orders",
+    "expenses": "Expenses",
+    "help": "Help",
+    "about": "Meet the Developer"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "summary": "Summary",
+    "analytics": "Analytics",
+    "cards": {
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "orders": "Orders",
+      "balance": "Balance"
+    },
+    "charts": {
+      "salesByCategory": "Sales by Product Category",
+      "expenses": "Expenses",
+      "totalSales": "Total Sales ($)",
+      "totalSalesLabel": "Total Sales"
+    }
+  },
+  "orders": {
+    "title": "Orders",
+    "add": "Add Order",
+    "export": "Export to CSV",
+    "search": "Search orders...",
+    "revenueLabel": "Total Revenue",
+    "table": {
+      "id": "Order ID",
+      "date": "Date",
+      "item": "Item Name",
+      "price": "Price",
+      "qty": "Qty",
+      "shipping": "Shipping",
+      "taxes": "Taxes",
+      "total": "Total",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "form": {
+      "id": "Order ID",
+      "date": "Order Date",
+      "item": "Item Name",
+      "price": "Item Price",
+      "qty": "Quantity Bought",
+      "shipping": "Shipping Fee",
+      "taxes": "Taxes",
+      "status": "Order Status",
+      "total": "Total Order Amount",
+      "calculated": "(Calculated)",
+      "submit": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "choose": "Choose an item",
+      "chooseStatus": "Choose a status"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    }
+  },
+  "products": {
+    "title": "Products",
+    "add": "Add Product",
+    "export": "Download CSV",
+    "search": "Search products...",
+    "form": {
+      "id": "Product ID",
+      "name": "Product Name",
+      "desc": "Product Description",
+      "category": "Product Category",
+      "price": "Product Price",
+      "sold": "Number of Units Sold",
+      "submit": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "choose": "Choose a product",
+      "chooseCategory": "Choose a category"
+    },
+    "table": {
+      "id": "Product ID",
+      "name": "Product Name",
+      "desc": "Description",
+      "category": "Category",
+      "price": "Price",
+      "sold": "Units Sold",
+      "actions": "Action"
+    },
+    "categories": {
+      "clothing": "Clothing",
+      "drinkware": "Drinkware",
+      "accessories": "Accessories",
+      "hats": "Hats",
+      "homedecor": "Home decor"
+    },
+    "names": {
+      "baseballcaps": "Baseball caps",
+      "snapbacks": "Snapbacks",
+      "beanies": "Beanies",
+      "buckethats": "Bucket hats",
+      "mugs": "Mugs",
+      "waterbottles": "Water bottles",
+      "tumblers": "Tumblers",
+      "tshirts": "T-shirts",
+      "sweatshirts": "Sweatshirts",
+      "hoodies": "Hoodies",
+      "pillowcases": "Pillow cases",
+      "totebags": "Tote bags",
+      "stickers": "Stickers",
+      "posters": "Posters",
+      "framedposters": "Framed posters",
+      "canvasprints": "Canvas prints"
+    }
+  },
+  "finances": {
+    "title": "Expenses",
+    "add": "Add Expense",
+    "export": "Export to CSV",
+    "search": "Search expenses...",
+    "totalLabel": "Total Expenses",
+    "table": {
+      "id": "S/N",
+      "date": "Date",
+      "category": "Expense Category",
+      "amount": "Amount",
+      "notes": "Notes",
+      "actions": "Action"
+    },
+    "form": {
+      "date": "Transaction Date",
+      "category": "Expense Category",
+      "amount": "Amount",
+      "notes": "Notes",
+      "submit": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "chooseCategory": "Choose an expense category"
+    },
+    "categories": {
+      "rent": "Rent",
+      "utilities": "Utilities",
+      "supplies": "Supplies",
+      "orderfulfillment": "Order Fulfillment",
+      "miscellaneous": "Miscellaneous"
+    }
+  },
+  "help": {
+    "title": "Using BizTrack: A Quick Guide",
+    "sections": {
+      "whatIsBizTrack": {
+        "title": "What is BizTrack?",
+        "content": "BizTrack is your go-to business management tool designed with small business owners in mind. It's an all-in-one platform that helps you effortlessly manage your products, track orders, and stay on top of your finances. Let me walk you through the basics:"
+      },
+      "dashboard": {
+        "title": "Navigating the Dashboard",
+        "content": "The Dashboard is your central hub, giving you a snapshot of your business's overall performance. Here, you'll find key metrics like total expenses, revenues, profits and the number of orders. It's your command center for a quick overview."
+      },
+      "expenses": {
+        "title": "Expenses Page",
+        "step1Title": "Record Your Expenses: ",
+        "step1Content": "Head to the Expenses page to add your business expenses. Fill in the date, choose a category, enter the amount, and jot down any notes. It's that simple.",
+        "step2Title": "Edit or Delete Expenses: ",
+        "step2Content": "Made a mistake? No worries! You can easily edit or delete expense records right from the Expenses page."
+      },
+      "orders": {
+        "title": "Orders Page",
+        "step1Title": "Track Your Orders: ",
+        "step1Content": "On the Orders page, you can keep tabs on all your orders. Each entry details the product, quantity, and order status.",
+        "step2Title": "Effortless Editing: ",
+        "step2Content": "Need to update an order status? Click the \"Edit\" button and make your changes. It's hassle-free."
+      },
+      "adding": {
+        "title": "Adding a New Expense, Order or Product",
+        "step1": "Click on \"Add Expense\" or the equivalent button on the order or product page.",
+        "step2": "Fill in the product details or order details or transaction date, category, amount, and any notes.",
+        "step3": "Hit \"Done,\" and you're all set. Your order, product or transaction will now appear in the respective page and on the Dashboard."
+      },
+      "sorting": {
+        "title": "Sorting and Searching Entries/Tables",
+        "step1": "Click on any column heading (headers) to sort the entries in the table by that column in either ascending order or alphabetical order.",
+        "step2": "You can also search for a particular product, order or expense by entrering the value in the search box at the top of the respective page."
+      },
+      "export": {
+        "title": "Export to CSV",
+        "content1": "Want to keep a backup or analyze your data elsewhere? Simply click on \"Export to CSV\" to download a CSV file with all your business data.",
+        "content2": "BizTrack is designed to be intuitive, user-friendly, and adaptable to your business needs. Explore the different pages, try out the features, and let BizTrack simplify your small business management."
+      }
+    },
+    "contact": {
+      "intro": "Have questions, feedback, or just want to connect? Feel free to reach out!"
+    }
+  },
+  "common": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close"
+  }
+}

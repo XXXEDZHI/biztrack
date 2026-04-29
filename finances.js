@@ -3,6 +3,7 @@ function escapeHTML(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
 function openSidebar() {
     var side = document.getElementById('sidebar');
     side.style.display = (side.style.display === "block") ? "none" : "block";
@@ -12,9 +13,8 @@ function closeSidebar() {
     document.getElementById('sidebar').style.display = 'none';
 }
 
-
 function openForm() {
-    var form = document.getElementById("transaction-form")
+    var form = document.getElementById("transaction-form");
     form.style.display = (form.style.display === "block") ? "none" : "block";
 }
 
@@ -22,109 +22,38 @@ function closeForm() {
     document.getElementById("transaction-form").style.display = "none";
 }
 
+// ✅ 辅助函数：把 "Order Fulfillment" 转成 "orderFulfillment" 用于翻译 key
+function getCategoryKey(name) {
+    return name.replace(/\s+/g, '').toLowerCase();
+}
 
 let transactions = [];
 let serialNumberCounter;
 
-window.onload = function () {
-    const storedTransactions = localStorage.getItem("bizTrackTransactions");
-    if (storedTransactions) {
-        transactions = JSON.parse(storedTransactions);
-    } else {
-        transactions = [
-            {
-                trID: 1,
-                trDate: "2024-01-05",
-                trCategory: "Rent",
-                trAmount: 100.00,
-                trNotes: "January Rent"
-            },
-            {
-                trID: 2,
-                trDate: "2024-01-15",
-                trCategory: "Order Fulfillment",
-                trAmount: 35.00,
-                trNotes: "Order #1005"
-            },
-            {
-                trID: 3,
-                trDate: "2024-01-08",
-                trCategory: "Utilities",
-                trAmount: 120.00,
-                trNotes: "Internet"
-            },
-            {
-                trID: 4,
-                trDate: "2024-02-05",
-                trCategory: "Supplies",
-                trAmount: 180.00,
-                trNotes: "Embroidery Machine"
-            },
-            {
-                trID: 5,
-                trDate: "2024-01-25",
-                trCategory: "Miscellaneous",
-                trAmount: 20.00,
-                trNotes: "Pizza"
-            },
-        ];
-
-        serialNumberCounter = transactions.length + 1
-  
-        localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
-    }
-  
-    renderTransactions(transactions);
-}
-
-function addOrUpdate(event) {
-    let type = document.getElementById("submitBtn").textContent;
-    if (type === 'Add') {
-        newTransaction(event);
-    } else if (type === 'Update'){
-        const trId = document.getElementById("tr-id").value;
-        updateTransaction(+trId); // convert to number
-    }
-}
-
-
-function newTransaction(event) {
-    event.preventDefault();
-    const trDate = document.getElementById("tr-date").value;
-    const trCategory = document.getElementById("tr-category").value;
-    const trAmount = parseFloat(document.getElementById("tr-amount").value);
-    const trNotes = document.getElementById("tr-notes").value;
-
-    serialNumberCounter = transactions.length + 1;
-    let trID = serialNumberCounter;
-    
-    const transaction = {
-      trID,
-      trDate,
-      trCategory,
-      trAmount,
-      trNotes,
-    };
-    
-    transactions.push(transaction);
-  
-    renderTransactions(transactions);
-    localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
-
-    serialNumberCounter++;
-    displayExpenses();
-  
-    document.getElementById("transaction-form").reset();
-}
-
-
-function renderTransactions(transactions) {
+// ✅ 核心函数：渲染费用表格（可被 i18n 重复调用）
+window.renderTransactionsTable = function() {
     const transactionTableBody = document.getElementById("tableBody");
+    if (!transactionTableBody) return;
+    
     transactionTableBody.innerHTML = "";
 
-    const transactionToRender = transactions;
+    // ✅ 新增：空状态处理（缺陷修复）
+    if (!transactions || transactions.length === 0) {
+        transactionTableBody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                    <i class="fas fa-receipt" style="font-size: 48px; display: block; margin-bottom: 10px;"></i>
+                    <p style="font-size: 16px;">No expenses found. Click "Add Expense" to create one!</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
 
-    transactionToRender.forEach(transaction => {
+    // 获取翻译函数
+    const t = window.i18n ? window.i18n.t : (key => key);
+
+    transactions.forEach(transaction => {
         const transactionRow = document.createElement("tr");
         transactionRow.className = "transaction-row";
 
@@ -135,36 +64,86 @@ function renderTransactions(transactions) {
         transactionRow.dataset.trNotes = transaction.trNotes;
 
         const formattedAmount = typeof transaction.trAmount === 'number' ? `$${transaction.trAmount.toFixed(2)}` : '';
+        
+        // ✅ 翻译费用类别：finances.categories.rent -> "房租"
+        const catKey = getCategoryKey(transaction.trCategory);
+        const translatedCategory = t('finances.categories.' + catKey);
 
         transactionRow.innerHTML = `
             <td>${transaction.trID}</td>
             <td>${transaction.trDate}</td>
-            <td>${transaction.trCategory}</td>
+            <td>${escapeHTML(translatedCategory)}</td>
             <td class="tr-amount">${formattedAmount}</td>
             <td>${escapeHTML(transaction.trNotes)}</td>
             <td class="action">
-                <i title="Edit" onclick="editRow('${transaction.trID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-                <i onclick="deleteTransaction('${transaction.trID}')" class="delete-icon fas fa-trash-alt"></i>
+                <i title="${t('common.edit')}" onclick="editRow('${transaction.trID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
+                <i onclick="deleteTransaction('${transaction.trID}')" class="delete-icon fas fa-trash-alt" title="${t('common.delete')}"></i>
             </td> 
         `;
         transactionTableBody.appendChild(transactionRow);
-  });
-  displayExpenses();
+    });
+    
+    displayExpenses();
+};
+
+function initFinances() {
+    const storedTransactions = localStorage.getItem("bizTrackTransactions");
+    if (storedTransactions) {
+        transactions = JSON.parse(storedTransactions);
+    } else {
+        transactions = [
+            { trID: 1, trDate: "2024-01-05", trCategory: "Rent", trAmount: 100.00, trNotes: "January Rent" },
+            { trID: 2, trDate: "2024-01-15", trCategory: "Order Fulfillment", trAmount: 35.00, trNotes: "Order #1005" },
+            { trID: 3, trDate: "2024-01-08", trCategory: "Utilities", trAmount: 120.00, trNotes: "Internet" },
+            { trID: 4, trDate: "2024-02-05", trCategory: "Supplies", trAmount: 180.00, trNotes: "Embroidery Machine" },
+            { trID: 5, trDate: "2024-01-25", trCategory: "Miscellaneous", trAmount: 20.00, trNotes: "Pizza" },
+        ];
+        serialNumberCounter = transactions.length + 1;
+        localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
+    }
+    
+    // ✅ 首次渲染表格
+    window.renderTransactionsTable();
 }
 
-function displayExpenses() {
-    const resultElement = document.getElementById("total-expenses");
+function addOrUpdate(event) {
+    event.preventDefault();
+    let type = document.getElementById("submitBtn").textContent;
+    const t = window.i18n ? window.i18n.t : (key => key);
+    
+    if (type === t('finances.form.submit') || type === 'Add') {
+        newTransaction(event);
+    } else if (type === t('finances.form.update') || type === 'Update'){
+        const trId = document.getElementById("tr-id").value;
+        updateTransaction(+trId);
+    }
+}
 
-    const totalExpenses = transactions
-        .reduce((total, transaction) => total + transaction.trAmount,0);
+function newTransaction(event) {
+    const trDate = document.getElementById("tr-date").value;
+    const trCategory = document.getElementById("tr-category").value;
+    const trAmount = parseFloat(document.getElementById("tr-amount").value);
+    const trNotes = document.getElementById("tr-notes").value;
 
-    resultElement.innerHTML = `
-        <span>Total Expenses: $${totalExpenses.toFixed(2)}</span>
-    `;
+    serialNumberCounter = transactions.length + 1;
+    
+    const transaction = {
+      trID: serialNumberCounter,
+      trDate,
+      trCategory,
+      trAmount,
+      trNotes,
+    };
+    
+    transactions.push(transaction);
+    saveAndRender();
+    serialNumberCounter++;
+    document.getElementById("transaction-form").reset();
 }
 
 function editRow(trID) {
     const trToEdit = transactions.find(transaction => transaction.trID == trID);
+    if (!trToEdit) return;
     
     document.getElementById("tr-id").value = trToEdit.trID;      
     document.getElementById("tr-date").value = trToEdit.trDate;
@@ -172,58 +151,61 @@ function editRow(trID) {
     document.getElementById("tr-amount").value = trToEdit.trAmount;
     document.getElementById("tr-notes").value = trToEdit.trNotes;
   
-    document.getElementById("submitBtn").textContent = "Update";
+    const t = window.i18n ? window.i18n.t : (key => key);
+    document.getElementById("submitBtn").textContent = t('finances.form.update');
 
-    document.getElementById("transaction-form").style.display = "block";
-  }
-  
-function deleteTransaction(trID) {
-    const indexToDelete = transactions.findIndex(transaction => transaction.trID == trID);
-
-    if (indexToDelete !== -1) {
-        transactions.splice(indexToDelete, 1);
-
-        localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
-
-        renderTransactions(transactions);
-    }
+    openForm();
 }
 
-  function updateTransaction(trID) {
+function deleteTransaction(trID) {
+    transactions = transactions.filter(t => t.trID != trID);
+    saveAndRender();
+}
+
+function updateTransaction(trID) {
     const indexToUpdate = transactions.findIndex(transaction => transaction.trID === trID);
+    if (indexToUpdate === -1) return;
 
-    if (indexToUpdate !== -1) {
-        const updatedTransaction = {
-            trID: trID,
-            trDate: document.getElementById("tr-date").value,
-            trCategory: document.getElementById("tr-category").value,
-            trAmount: parseFloat(document.getElementById("tr-amount").value),
-            trNotes: document.getElementById("tr-notes").value,
-        };
+    transactions[indexToUpdate] = {
+        trID: trID,
+        trDate: document.getElementById("tr-date").value,
+        trCategory: document.getElementById("tr-category").value,
+        trAmount: parseFloat(document.getElementById("tr-amount").value),
+        trNotes: document.getElementById("tr-notes").value,
+    };
 
-        transactions[indexToUpdate] = updatedTransaction;
+    saveAndRender();
+    document.getElementById("transaction-form").reset();
+    
+    const t = window.i18n ? window.i18n.t : (key => key);
+    document.getElementById("submitBtn").textContent = t('finances.form.submit');
+}
 
-        localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
+function saveAndRender() {
+    localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
+    window.renderTransactionsTable();
+}
 
-        renderTransactions(transactions);
+function displayExpenses() {
+    const resultElement = document.getElementById("total-expenses");
+    const t = window.i18n ? window.i18n.t : (key => key);
 
-        document.getElementById("transaction-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
-    }
+    const totalExpenses = transactions.reduce((total, transaction) => total + transaction.trAmount, 0);
+
+    resultElement.innerHTML = `
+        <span>${t('finances.totalLabel')}: $${totalExpenses.toFixed(2)}</span>
+    `;
 }
 
 function sortTable(column) {
     const tbody = document.getElementById("tableBody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
-
     const isNumeric = column === "trID" || column === "trAmount";
 
     const sortedRows = rows.sort((a, b) => {
         const aValue = isNumeric ? parseFloat(a.dataset[column]) : a.dataset[column];
         const bValue = isNumeric ? parseFloat(b.dataset[column]) : b.dataset[column];
-
         if (typeof aValue === "string" && typeof bValue === "string") {
-            // Case-insensitive string comparison for text columns
             return aValue.localeCompare(bValue, undefined, { sensitivity: "base" });
         } else {
             return aValue - bValue;
@@ -231,7 +213,6 @@ function sortTable(column) {
     });
 
     rows.forEach(row => tbody.removeChild(row));
-
     sortedRows.forEach(row => tbody.appendChild(row));
 }
 
@@ -241,17 +222,14 @@ document.getElementById("searchInput").addEventListener("keyup", function(event)
     }
 });
 
-
 function performSearch() {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();
     const rows = document.querySelectorAll(".transaction-row");
-
     rows.forEach(row => {
         const visible = row.innerText.toLowerCase().includes(searchInput);
         row.style.display = visible ? "table-row" : "none";
     });
 }
-
 
 function exportToCSV() {
     const transactionsToExport = transactions.map(transaction => {
@@ -265,22 +243,20 @@ function exportToCSV() {
     });
   
     const csvContent = generateCSV(transactionsToExport);
-  
     const blob = new Blob([csvContent], { type: 'text/csv' });
-  
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
     link.download = 'biztrack_expense_table.csv';
-  
     document.body.appendChild(link);
     link.click();
-  
     document.body.removeChild(link);
 }
   
 function generateCSV(data) {
     const headers = Object.keys(data[0]).join(',');
     const rows = data.map(order => Object.values(order).join(','));
-
     return `${headers}\n${rows.join('\n')}`;
 }
+
+// ✅ 页面加载时初始化
+window.addEventListener('load', initFinances);
