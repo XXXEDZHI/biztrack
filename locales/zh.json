@@ -1,0 +1,207 @@
+{
+  "nav": {
+    "dashboard": "数据看板",
+    "products": "产品管理",
+    "orders": "订单管理",
+    "expenses": "费用管理",
+    "help": "帮助",
+    "about": "关于开发者"
+  },
+  "dashboard": {
+    "title": "数据看板",
+    "summary": "概览",
+    "analytics": "数据分析",
+    "cards": {
+      "revenue": "总收入",
+      "expenses": "总支出",
+      "orders": "订单数",
+      "balance": "余额"
+    },
+    "charts": {
+      "salesByCategory": "按品类销售额",
+      "expenses": "支出分布",
+      "totalSales": "销售额 ($)",
+      "totalSalesLabel": "销售额"
+    }
+  },
+  "orders": {
+    "title": "订单管理",
+    "add": "添加订单",
+    "export": "导出CSV",
+    "search": "搜索订单...",
+    "revenueLabel": "总收入",
+    "table": {
+      "id": "订单号",
+      "date": "日期",
+      "item": "商品名称",
+      "price": "单价",
+      "qty": "数量",
+      "shipping": "运费",
+      "taxes": "税费",
+      "total": "总计",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "form": {
+      "id": "订单号",
+      "date": "订单日期",
+      "item": "商品名称",
+      "price": "商品单价",
+      "qty": "购买数量",
+      "shipping": "运费",
+      "taxes": "税费",
+      "status": "订单状态",
+      "total": "订单总额",
+      "calculated": "自动计算",
+      "submit": "添加",
+      "update": "更新",
+      "cancel": "取消",
+      "choose": "选择商品",
+      "chooseStatus": "选择状态"
+    },
+    "status": {
+      "pending": "待处理",
+      "processing": "处理中",
+      "shipped": "已发货",
+      "delivered": "已送达"
+    }
+  },
+  "products": {
+    "title": "产品管理",
+    "add": "添加产品",
+    "export": "导出CSV",
+    "search": "搜索产品...",
+    "form": {
+      "id": "产品编号",
+      "name": "产品名称",
+      "desc": "产品描述",
+      "category": "产品类别",
+      "price": "产品价格",
+      "sold": "销售数量",
+      "submit": "添加",
+      "update": "更新",
+      "cancel": "取消",
+      "choose": "选择产品",
+      "chooseCategory": "选择类别"
+    },
+    "table": {
+      "id": "产品编号",
+      "name": "产品名称",
+      "desc": "描述",
+      "category": "类别",
+      "price": "价格",
+      "sold": "销量",
+      "actions": "操作"
+    },
+    "categories": {
+      "clothing": "服装",
+      "drinkware": "饮具",
+      "accessories": "配件",
+      "hats": "帽子",
+      "homedecor": "家居装饰"
+    },
+    "names": {
+      "baseballcaps": "棒球帽",
+      "snapbacks": "平檐帽",
+      "beanies": "针织帽",
+      "buckethats": "渔夫帽",
+      "mugs": "马克杯",
+      "waterbottles": "水瓶",
+      "tumblers": "保温杯",
+      "tshirts": "T恤",
+      "sweatshirts": "卫衣",
+      "hoodies": "连帽衫",
+      "pillowcases": "枕套",
+      "totebags": "帆布袋",
+      "stickers": "贴纸",
+      "posters": "海报",
+      "framedposters": "带框海报",
+      "canvasprints": "帆布画"
+    }
+  },
+  "finances": {
+    "title": "费用管理",
+    "add": "添加费用",
+    "export": "导出CSV",
+    "search": "搜索费用...",
+    "totalLabel": "总支出",
+    "table": {
+      "id": "序号",
+      "date": "日期",
+      "category": "类别",
+      "amount": "金额",
+      "notes": "备注",
+      "actions": "操作"
+    },
+    "form": {
+      "date": "交易日期",
+      "category": "费用类别",
+      "amount": "金额",
+      "notes": "备注",
+      "submit": "添加",
+      "update": "更新",
+      "cancel": "取消",
+      "chooseCategory": "选择类别"
+    },
+    "categories": {
+      "rent": "房租",
+      "utilities": "水电费",
+      "supplies": "物料",
+      "orderfulfillment": "订单履约",
+      "miscellaneous": "其他"
+    }
+  },
+  "help": {
+    "title": "使用指南",
+    "sections": {
+      "whatIsBizTrack": {
+        "title": "什么是 BizTrack？",
+        "content": "BizTrack 是专为小型企业主设计的业务管理工具。它是一个一体化平台，帮助您轻松管理产品、跟踪订单并掌握财务状况。让我带您了解基础知识："
+      },
+      "dashboard": {
+        "title": "导航数据看板",
+        "content": "数据看板是您的中心枢纽，提供业务整体表现的快照。在这里，您可以找到总支出、总收入、利润和订单数量等关键指标。这是您快速概览的指挥中心。"
+      },
+      "expenses": {
+        "title": "费用管理页面",
+        "step1Title": "记录费用：",
+        "step1Content": "前往费用页面添加您的业务支出。填写日期、选择类别、输入金额，并记下任何备注。就这么简单。",
+        "step2Title": "编辑或删除费用：",
+        "step2Content": "出错了？别担心！您可以直接从费用页面轻松编辑或删除费用记录。"
+      },
+      "orders": {
+        "title": "订单管理页面",
+        "step1Title": "跟踪订单：",
+        "step1Content": "在订单页面，您可以监控所有订单。每条记录都详细说明产品、数量和订单状态。",
+        "step2Title": "轻松编辑：",
+        "step2Content": "需要更新订单状态？点击\"编辑\"按钮并进行更改。非常简单。"
+      },
+      "adding": {
+        "title": "添加新费用、订单或产品",
+        "step1": "点击\"添加费用\"或订单/产品页面上的相应按钮。",
+        "step2": "填写产品详情、订单详情或交易日期、类别、金额及任何备注。",
+        "step3": "点击\"完成\"，就搞定了。您的订单、产品或交易现在将显示在相应页面和数据看板上。"
+      },
+      "sorting": {
+        "title": "排序和搜索条目/表格",
+        "step1": "点击任何列标题（表头）以按该列升序或字母顺序对表格中的条目进行排序。",
+        "step2": "您也可以通过在相应页面顶部的搜索框中输入值来搜索特定产品、订单或费用。"
+      },
+      "export": {
+        "title": "导出为 CSV",
+        "content1": "想要备份或在其他地方分析您的数据？只需点击\"导出 CSV\"即可下载包含所有业务数据的 CSV 文件。",
+        "content2": "BizTrack 旨在直观、用户友好，并适应您的业务需求。探索不同页面，尝试各种功能，让 BizTrack 简化您的小型业务管理。"
+      }
+    },
+    "contact": {
+      "intro": "有问题、反馈，或只是想联系？随时联系我们！"
+    }
+  },
+  "common": {
+    "edit": "编辑",
+    "delete": "删除",
+    "save": "保存",
+    "cancel": "取消",
+    "close": "关闭"
+  }
+}

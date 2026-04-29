@@ -13,6 +13,12 @@
     <title>Products - BizTrack</title>
 </head>
 <body>
+    <!-- 语言切换按钮 -->
+    <div class="lang-switch" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background: white; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <button onclick="i18n.loadLanguage('en')" style="padding: 5px 12px; cursor: pointer; border: none; background: #4CAF50; color: white; border-radius: 3px;">EN</button>
+        <button onclick="i18n.loadLanguage('zh')" style="padding: 5px 12px; cursor: pointer; border: none; background: #2196F3; color: white; border-radius: 3px; margin-left: 5px;">中文</button>
+    </div>
+
     <div id="sidebar" class="sidebar">
         <div class="logo">
             <a href="./index.html">
@@ -22,163 +28,126 @@
             <i class="fa-solid fa-xmark" title="Close" onclick="closeSidebar()"></i>
         </div>
         <ul class="menu">
-            <li>
-                <a href="./index.html">
-                    <i class="fa-solid fa-gauge-high"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-            <li class="active">
-                <a href="./products.html">
-                    <i class="fas fa-dolly"></i>
-                    <span>Products</span>
-                </a>
-            </li>
-            <li>
-                <a href="./orders.html">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span>Orders</span>
-                </a>
-            </li>
-            <li>
-                <a href="./finances.html">
-                    <i class="fas fa-sack-dollar"></i>
-                    <span>Expenses</span>
-                </a>
-            </li>
-            <li>
-                <a href="./help.html">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Help</span>
-                </a>
-            </li>
-            <li class="logout">
-                <a href="./about.html">
-                    <i class="fa-solid fa-users-line"></i>
-                    <span>Meet the Developer</span>
-                </a>
-            </li>
+            <li><a href="./index.html"><i class="fa-solid fa-gauge-high"></i><span data-i18n="nav.dashboard">Dashboard</span></a></li>
+            <li class="active"><a href="./products.html"><i class="fas fa-dolly"></i><span data-i18n="nav.products">Products</span></a></li>
+            <li><a href="./orders.html"><i class="fas fa-shopping-cart"></i><span data-i18n="nav.orders">Orders</span></a></li>
+            <li><a href="./finances.html"><i class="fas fa-sack-dollar"></i><span data-i18n="nav.expenses">Expenses</span></a></li>
+            <li><a href="./help.html"><i class="fas fa-question-circle"></i><span data-i18n="nav.help">Help</span></a></li>
+            <li class="logout"><a href="./about.html"><i class="fa-solid fa-users-line"></i><span data-i18n="nav.about">Meet the Developer</span></a></li>
         </ul>
     </div>
 
     <div class="main-content">
         <div class="header-wrapper">
-            <div class="menu-icon" onclick="openSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </div>
-            <div class="header-title">
-                <!-- <span>Primary</span> -->
-                <h2>Products</h2>
-            </div>
+            <div class="menu-icon" onclick="openSidebar()"><i class="fa-solid fa-bars"></i></div>
+            <div class="header-title"><h2 data-i18n="products.title">Products</h2></div>
             <div class="user-info">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="search" id="searchInput" placeholder="Search">
+                    <input type="search" id="searchInput" data-i18n-placeholder="products.search" placeholder="Search">
                 </div>
-                <!-- <i class="fas fa-user-alt fa-xl"></i> -->
             </div>
         </div>
 
         <div class="table-wrapper">
             <div class="product-title">
-                <h3 class="main-title">Products</h3>
+                <h3 class="main-title" data-i18n="products.title">Products</h3>
                 <div class="product-button">
-                    <button class="add-button" onclick="openForm()">Add Product</button>
-                    <button class="download-button" onclick="exportToCSV()">Download CSV</button>
+                    <button class="add-button" onclick="openForm()" data-i18n="products.add">Add Product</button>
+                    <button class="download-button" onclick="exportToCSV()" data-i18n="products.export">Download CSV</button>
                 </div>
             </div>
+
             <div class="form-popup">
                 <form class="form-container" id="product-form" onsubmit="addOrUpdate(event)">
                     <div class="form-columns">
                         <div class="first-col">
-                            <label for="product-id"><b>Product ID: </b></label>
+                            <label for="product-id"><b data-i18n="products.form.id">Product ID: </b></label>
                             <input type="text" id="product-id" placeholder="PD001" required>
                         
-                            <label for="product-name"><b>Product Name</b></label>
+                            <label for="product-name"><b data-i18n="products.form.name">Product Name</b></label>
+                            <!-- ✅ 修改点：给 option 加上 data-i18n -->
                             <select name="product-name" id="product-name" required>
-                                <option value="" disabled selected hidden>Choose a product</option>
+                                <option value="" disabled selected hidden data-i18n="products.form.choose">Choose a product</option>
                                 <optgroup label="Hats">
-                                    <option value="Baseball caps">Baseball caps</option>
-                                    <option value="Snapbacks">Snapbacks</option>
-                                    <option value="Beanies">Beanies</option>
-                                    <option value="Bucket hats">Bucket hats</option>
+                                    <option value="Baseball caps" data-i18n="products.names.baseballcaps">Baseball caps</option>
+                                    <option value="Snapbacks" data-i18n="products.names.snapbacks">Snapbacks</option>
+                                    <option value="Beanies" data-i18n="products.names.beanies">Beanies</option>
+                                    <option value="Bucket hats" data-i18n="products.names.buckethats">Bucket hats</option>
                                 </optgroup>
                                 <optgroup label="Drinkware">
-                                    <option value="Mugs">Mugs</option>
-                                    <option value="Water bottles">Water bottles</option>
-                                    <option value="Tumblers">Tumblers</option>
+                                    <option value="Mugs" data-i18n="products.names.mugs">Mugs</option>
+                                    <option value="Water bottles" data-i18n="products.names.waterbottles">Water bottles</option>
+                                    <option value="Tumblers" data-i18n="products.names.tumblers">Tumblers</option>
                                 </optgroup>   
                                 <optgroup label="Clothing">
-                                    <option value="T-shirts">T-shirts</option>
-                                    <option value="Sweatshirts">Sweatshirts</option>
-                                    <option value="Hoodies">Hoodies</option>
+                                    <option value="T-shirts" data-i18n="products.names.tshirts">T-shirts</option>
+                                    <option value="Sweatshirts" data-i18n="products.names.sweatshirts">Sweatshirts</option>
+                                    <option value="Hoodies" data-i18n="products.names.hoodies">Hoodies</option>
                                 </optgroup>   
                                 <optgroup label="Accessories">
-                                    <option value="Pillow cases">Pillow cases</option>
-                                    <option value="Tote bags">Tote bags</option>
-                                    <option value="Stickers">Stickers</option>
+                                    <option value="Pillow cases" data-i18n="products.names.pillowcases">Pillow cases</option>
+                                    <option value="Tote bags" data-i18n="products.names.totebags">Tote bags</option>
+                                    <option value="Stickers" data-i18n="products.names.stickers">Stickers</option>
                                 </optgroup>   
                                 <optgroup label="Home decor">
-                                    <option value="Posters">Posters</option>
-                                    <option value="Framed posters">Framed posters</option>
-                                    <option value="Canvas prints">Canvas prints</option>
+                                    <option value="Posters" data-i18n="products.names.posters">Posters</option>
+                                    <option value="Framed posters" data-i18n="products.names.framedposters">Framed posters</option>
+                                    <option value="Canvas prints" data-i18n="products.names.canvasprints">Canvas prints</option>
                                 </optgroup>
                             </select>
     
-                            <label for="product-desc"><b>Product Description:</b></label>
+                            <label for="product-desc"><b data-i18n="products.form.desc">Product Description:</b></label>
                             <input type="text" id="product-desc" placeholder="Travel Mug" required>
                         </div>
                         <div class="second-col">
-                            <label for="product-cat"><b>Product Category:</b></label>
+                            <label for="product-cat"><b data-i18n="products.form.category">Product Category:</b></label>
+                            <!-- ✅ 修改点：给 option 加上 data-i18n -->
                             <select name="product-cat" id="product-cat" required>
-                                <option value="" disabled selected>Choose a category</option>
-                                <option value="Clothing">Clothing</option>
-                                <option value="Drinkware">Drinkware</option>
-                                <option value="Accessories">Accessories</option>
-                                <option value="Hats">Hats</option>
-                                <option value="Home decor">Home decor</option>
+                                <option value="" disabled selected data-i18n="products.form.chooseCategory">Choose a category</option>
+                                <option value="Clothing" data-i18n="products.categories.clothing">Clothing</option>
+                                <option value="Drinkware" data-i18n="products.categories.drinkware">Drinkware</option>
+                                <option value="Accessories" data-i18n="products.categories.accessories">Accessories</option>
+                                <option value="Hats" data-i18n="products.categories.hats">Hats</option>
+                                <option value="Home decor" data-i18n="products.categories.homedecor">Home decor</option>
                             </select>
     
-                            <label for="product-price"><b>Product Price:</b></label>
+                            <label for="product-price"><b data-i18n="products.form.price">Product Price:</b></label>
                             <input type="number" id="product-price" placeholder="$0.00" min="0.00" max="10000.00" step="0.01" required>
     
-                            <label for="product-sold"><b>Number of Units Sold:</b></label>
+                            <label for="product-sold"><b data-i18n="products.form.sold">Number of Units Sold:</b></label>
                             <input type="number" id="product-sold" placeholder="10" required>
                         </div>
                     </div>
                     
                     <div class="button-col">
-                        <button type="submit" class="btn" id="submitBtn">Add</button>
-                        <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                        <button type="submit" class="btn" id="submitBtn" data-i18n="products.form.submit">Add</button>
+                        <button type="button" class="btn cancel" onclick="closeForm()" data-i18n="products.form.cancel">Cancel</button>
                     </div>
                 </form>
             </div>
+
             <div class="table-container">
                 <table id="product-table">
                     <thead>
                         <tr>
-                            <th onclick="sortTable('prodID')">Product ID</th>
-                            <th onclick="sortTable('prodName')">Product Name</th>
-                            <th onclick="sortTable('prodDesc')">Description</th>
-                            <th onclick="sortTable('prodCat')">Category</th>
-                            <th onclick="sortTable('prodPrice')">Price</th>
-                            <th onclick="sortTable('prodSold')">Units Sold</th>
-                            <th>Action</th>
+                            <th onclick="sortTable('prodID')" data-i18n="products.table.id">Product ID</th>
+                            <th onclick="sortTable('prodName')" data-i18n="products.table.name">Product Name</th>
+                            <th onclick="sortTable('prodDesc')" data-i18n="products.table.desc">Description</th>
+                            <th onclick="sortTable('prodCat')" data-i18n="products.table.category">Category</th>
+                            <th onclick="sortTable('prodPrice')" data-i18n="products.table.price">Price</th>
+                            <th onclick="sortTable('prodSold')" data-i18n="products.table.sold">Units Sold</th>
+                            <th data-i18n="products.table.actions">Action</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
                     </tbody>
-                    <!-- <tfoot>
-                        <tr>
-                            <td colspan="11"><a href="#">View more orders</a></td>
-                        </tr>
-                    </tfoot> -->
                 </table>
             </div>
         </div>
     </div>
-    </div>
 
+    <script src="i18n.js"></script>
     <script src="./products.js"></script>
 </body>
 </html>

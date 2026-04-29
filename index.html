@@ -13,6 +13,12 @@
     <title>Dashboard - BizTrack</title>
 </head>
 <body>
+    <!-- 语言切换按钮 -->
+    <div class="lang-switch" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background: white; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <button onclick="i18n.loadLanguage('en')" style="padding: 5px 12px; cursor: pointer; border: none; background: #4CAF50; color: white; border-radius: 3px;">EN</button>
+        <button onclick="i18n.loadLanguage('zh')" style="padding: 5px 12px; cursor: pointer; border: none; background: #2196F3; color: white; border-radius: 3px; margin-left: 5px;">中文</button>
+    </div>
+
     <div id="sidebar" class="sidebar">
         <div class="logo">
             <a href="./index.html">
@@ -25,37 +31,37 @@
             <li class="active">
                 <a href="./index.html">
                     <i class="fa-solid fa-gauge-high"></i>
-                    <span>Dashboard</span>
+                    <span data-i18n="nav.dashboard">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="./products.html">
                     <i class="fas fa-dolly"></i>
-                    <span>Products</span>
+                    <span data-i18n="nav.products">Products</span>
                 </a>
             </li>
             <li>
                 <a href="./orders.html">
                     <i class="fas fa-shopping-cart"></i>
-                    <span>Orders</span>
+                    <span data-i18n="nav.orders">Orders</span>
                 </a>
             </li>
             <li>
                 <a href="./finances.html">
                     <i class="fas fa-sack-dollar"></i>
-                    <span>Expenses</span>
+                    <span data-i18n="nav.expenses">Expenses</span>
                 </a>
             </li>
             <li>
                 <a href="./help.html">
                     <i class="fas fa-question-circle"></i>
-                    <span>Help</span>
+                    <span data-i18n="nav.help">Help</span>
                 </a>
             </li>
             <li class="logout">
                 <a href="./about.html">
                     <i class="fa-solid fa-users-line"></i>
-                    <span>Meet the Developer</span>
+                    <span data-i18n="nav.about">Meet the Developer</span>
                 </a>
             </li>
         </ul>
@@ -67,29 +73,22 @@
                 <i class="fa-solid fa-bars"></i>
             </div>
             <div class="header-title">
-                <!-- <span>Primary</span> -->
-                <h2>Dashboard</h2>
+                <h2 data-i18n="dashboard.title">Dashboard</h2>
             </div>
             <div class="user-info">
-                <!-- <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="search" id="searchInput" placeholder="Search">
-                </div> -->
-                <!-- <i class="fas fa-user-alt fa-xl"></i> -->
             </div>
         </div>
 
         <div class="card-container">
-            <h3 class="main-title">Summary</h3>
+            <h3 class="main-title" data-i18n="dashboard.summary">Summary</h3>
             <div class="card-wrapper">
                 <a href="./orders.html">
                     <div class="payment-card">
                         <div class="card-header">
-                            <div class="amount" id="rev-amount">
-                            </div>
+                            <div class="amount" id="rev-amount"></div>
                             <i class="fas fa-sack-dollar icon"></i>
                         </div>
-                        <span class="card-detail">**** **** **** 5674</span>
+                        <span class="card-detail" data-i18n="dashboard.cards.revenue">Revenue</span>
                     </div>
                 </a>
                 <a href="./finances.html">    
@@ -98,7 +97,7 @@
                             <div class="amount" id="exp-amount"></div>
                             <i class="fas fa-credit-card icon"></i>
                         </div>
-                        <span class="card-detail">**** **** **** 2356</span>
+                        <span class="card-detail" data-i18n="dashboard.cards.expenses">Expenses</span>
                     </div>
                 </a>
                 <a href="./orders.html"> 
@@ -107,7 +106,7 @@
                             <div class="amount" id="num-orders"></div>
                             <i class="fas fa-shopping-cart icon"></i>
                         </div>
-                        <span class="card-detail">**** **** **** 1047</span>
+                        <span class="card-detail" data-i18n="dashboard.cards.orders">Orders</span>
                     </div>
                 </a>
                 <a href="#">
@@ -116,20 +115,20 @@
                             <div class="amount" id="balance"></div>
                             <i class="fas fa-arrow-up-right-dots icon"></i>
                         </div>
-                        <span class="card-detail">**** **** **** 2951</span>
+                        <span class="card-detail" data-i18n="dashboard.cards.balance">Balance</span>
                     </div>
                 </a> 
             </div>
         </div>
         <div class="charts-container">
-            <h3 class="main-title">Analytics</h3>
+            <h3 class="main-title" data-i18n="dashboard.analytics">Analytics</h3>
             <div class="charts-wrapper">
                 <div class="charts-card">
-                    <span class="chart-title">Sales by Product Category</span>
+                    <span class="chart-title" data-i18n="dashboard.charts.salesByCategory">Sales by Product Category</span>
                     <div id="bar-chart"></div>
                 </div>
                 <div class="charts-card">
-                    <span class="chart-title">Expenses</span>
+                    <span class="chart-title" data-i18n="dashboard.charts.expenses">Expenses</span>
                     <div id="donut-chart"></div>
                 </div>
             </div>
@@ -138,7 +137,8 @@
 
     <!-- Apex Charts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.45.2/apexcharts.min.js"></script>
+    <!-- 先引入翻译引擎，再引入业务逻辑 -->
+    <script src="i18n.js"></script>
     <script src="./script.js"></script>
-    <script>initializeChart()</script>
 </body>
 </html>
