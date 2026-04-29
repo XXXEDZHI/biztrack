@@ -147,7 +147,7 @@
       "rent": "房租",
       "utilities": "水电费",
       "supplies": "物料",
-      "orderFulfillment": "订单履约",
+      "orderfulfillment": "订单履约",
       "miscellaneous": "其他"
     }
   },
