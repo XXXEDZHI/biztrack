@@ -37,6 +37,19 @@ window.renderTransactionsTable = function() {
     
     transactionTableBody.innerHTML = "";
 
+    // ✅ 新增：空状态处理（缺陷修复）
+    if (!transactions || transactions.length === 0) {
+        transactionTableBody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                    <i class="fas fa-receipt" style="font-size: 48px; display: block; margin-bottom: 10px;"></i>
+                    <p style="font-size: 16px;">No expenses found. Click "Add Expense" to create one!</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
     // 获取翻译函数
     const t = window.i18n ? window.i18n.t : (key => key);
 
