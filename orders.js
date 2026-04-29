@@ -33,6 +33,19 @@ window.renderOrdersTable = function() {
     
     orderTableBody.innerHTML = "";
     
+    // ✅ 新增：空状态处理（缺陷修复）
+    if (!orders || orders.length === 0) {
+        orderTableBody.innerHTML = `
+            <tr>
+                <td colspan="10" style="text-align: center; padding: 40px; color: #999;">
+                    <i class="fas fa-inbox" style="font-size: 48px; display: block; margin-bottom: 10px;"></i>
+                    <p style="font-size: 16px;">No orders found. Click "Add Order" to create one!</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
     // 获取翻译函数
     const t = window.i18n ? window.i18n.t : (key => key);
 
@@ -208,7 +221,6 @@ document.getElementById("searchInput").addEventListener("keyup", (e) => {
 });
 
 function sortTable(col) {
-    // 简化版排序，保持原有逻辑即可
     const tbody = document.getElementById("tableBody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
     rows.sort((a, b) => {
